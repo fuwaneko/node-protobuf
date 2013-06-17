@@ -4,6 +4,7 @@
 	"description": "A Node.js protocol buffer wrapper",
 	"author": "Dmitry Gorbunov <atskiisotona@gmail.com",
 	"main": "./build/Release/protobuf.node",
+	"repository": "https://github.com/fuwaneko/node-protobuf",
 	"dependencies": {},
 	"engines": ["node >= 0.10.0"],
 	"licence": "MIT"

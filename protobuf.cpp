@@ -134,11 +134,12 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
             field->enum_type()->FindValueByNumber(val->Int32Value()) :
             field->enum_type()->FindValueByName(*String::AsciiValue(val));
 
-        if (enumValue != NULL)
+        if (enumValue != NULL) {
           if (repeated)
             r->AddEnum(message, field, enumValue);
           else
             r->SetEnum(message, field, enumValue);
+        }
         break;
       case FieldDescriptor::CPPTYPE_MESSAGE:
         if (val->IsObject()) {
@@ -168,7 +169,7 @@ void SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
   // build a reflection
   // get properties of passed object
   Local<Array> properties = subj->GetPropertyNames();
-  int len = properties->Length();
+  uint32_t len = properties->Length();
 
   for (uint32_t i = 0; i < len; i++) {
     // TODO: iterate over descriptor properties?
@@ -222,6 +223,11 @@ Handle<Value> Protobuf::Serialize(const Arguments &args) {
   int size = message->ByteSize();
   Buffer *buf = Buffer::New(size);
   bool result = message->SerializeToArray(Buffer::Data(buf), size);
+
+  if (!result) {
+    return v8::ThrowException(
+        v8::Exception::Error(String::New("Can't serialize")));
+  }
 
   // obtain Node.js Buffer constructor
   Local<Object> gScope = Context::GetCurrent()->Global();
@@ -342,7 +348,8 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
   const Descriptor *d = message.GetDescriptor();
 
   // get fields of descriptor
-  for (uint32_t i = 0; i < d->field_count(); i++) {
+  uint32_t count = d->field_count();
+  for (uint32_t i = 0; i < count; i++) {
     const FieldDescriptor *field = d->field(i);
 
     if (field != NULL) {

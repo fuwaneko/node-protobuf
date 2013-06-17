@@ -17,7 +17,7 @@
 				}
 			}, { # on linux and mac
 				"libraries": [
-					"-llibprotobuf"
+					"-lprotobuf"
 				]
 			}],
 		]
