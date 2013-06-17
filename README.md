@@ -18,7 +18,7 @@ Simple, huh?
 
 ### Windows
 
-First you have to obtain Microsoft Visual C++ 2010. Express is fine, but if you install SP1 then you'll need to reinstall x64 compilers from [http://www.microsoft.com/en-us/download/details.aspx?id=4422](here). Node.js distribution for Windows already includes node-gyp tool, so you don't need to worry about it.
+First you have to obtain Microsoft Visual C++ 2010. Express is fine, but if you install SP1 then you'll need to reinstall x64 compilers from [here](http://www.microsoft.com/en-us/download/details.aspx?id=4422). Node.js distribution for Windows already includes node-gyp tool, so you don't need to worry about it.
 
 Next, compile libprotobuf. Get it from Google, open vsprojects/protobuf.sln and compile it according to your OS version. For Windows 64 you *must* compile 64-bit library as Node.js is 64-bit on your system. By default there is only 32-bit target, so you have to add 64-bit manually. Open libprotobuf project properties and set CRT to Multi-Threaded (*not* DLL). Compile libprotobuf Release.
 
@@ -50,18 +50,18 @@ var newObj = p.Parse(buf, "MySchema") // you get plain object here, it should be
 
 ### Construct
 
-```Protobuf(buffer)```
+**Protobuf(buffer)**
 
 Parses binary buffer holding schema description. You can get schema by calling ```protoc protocol.proto -o protocol.desc```.
 
 ### Serialize
 
-```Protobuf.Serialize(object, schema)```
+**Protobuf.Serialize(object, schema)**
 
 Serializes plain object with accordance to protocol schema (i.e. message described in you protocol description file). Returns Node.js Buffer.
 
 ### Parse
 
-```Protobuf.Parse(buffer, schema)```
+**Protobuf.Parse(buffer, schema)**
 
 Parses Buffer (or UInt8Array for example, just anything that is binary data array) according to schema and returns plain object.
