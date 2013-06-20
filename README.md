@@ -4,10 +4,16 @@ It's a very simple wrapper around protocol buffers library by Google.
 It uses dynamic message building and parsing based on protocol schema you can get by compiling protocol description.
 I know that wrappers do exist, but I didn't like them.
 
+## Changelog
+
+### 1.0.2
+
++ Added experimental support for 64-bit precision integers (look below for constructor arguments)
+
 ## Requirements
 
-Protocol Buffers >= 2.1.0
-Node.js >= 0.10.0
+* Protocol Buffers >= 2.1.0
+* Node.js >= 0.10.0
 
 ## Installation
 
@@ -50,9 +56,15 @@ var newObj = p.Parse(buf, "MySchema") // you get plain object here, it should be
 
 ### Construct
 
-**Protobuf(buffer)**
+**Protobuf(buffer[, preserve_int64])**
 
 Parses binary buffer holding schema description. You can get schema by calling ```protoc protocol.proto -o protocol.desc```.
+
+Optional preserve_int64 argument allows to pass int64/uint64 numbers to/from JavaScript in a form of array consisting of high and low bits of such numbers: [hi, lo]. Note, that this is highly experimental and you must work with such numbers only if you really need such whole presicion. In any other case I recommend to use int32/uint32 or double if you need more precision. I added this functionality so JS programs working with existing protocol buffers enabled software could get same amount of presicion when transferring int64/uint64.
+
+Please note, that both high and low bits must be unsigned if you want to Parse. Serialize will return unsigned only too. You have to work with bit parts to create full number using some other library, e.g. [Int64](https://github.com/broofa/node-int64).
+
+Also, if you don't care about int64/uint64 presicion in JS, you can forget about preserve_int64 and all 64-bit integers that come to Serialize will become just Numbers, but if they are bigger than 2^53 you'll lose some data.
 
 ### Serialize
 

@@ -18,6 +18,8 @@ using namespace google::protobuf;
 using namespace v8;
 using node::Buffer;
 
+bool preserve_int64;
+
 class Protobuf : public node::ObjectWrap {
 public:
   static void Init(Handle<Object> exports);
@@ -72,6 +74,10 @@ Handle<Value> Protobuf::New(const Arguments& args) {
     pool->BuildFile(descriptors.file(i));
   }
 
+  if (args.Length() > 1) {
+    preserve_int64 = args[1]->ToBoolean()->Value();
+  }
+
   Protobuf* obj = new Protobuf(pool);
   obj->Wrap(args.This());
 
@@ -94,9 +100,23 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
       }
       case FieldDescriptor::CPPTYPE_INT64:
         if (repeated)
-          r->AddInt64(message, field, val->NumberValue());
+          if (preserve_int64 && val->IsArray()) {
+            Local<Object> n64_array = val->ToObject();
+            uint64 n64;
+            uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
+            n64 = ((uint64)hi << 32) + (uint64)lo;
+            r->AddInt64(message, field, n64);
+          } else
+            r->AddInt64(message, field, val->NumberValue());
         else
-          r->SetInt64(message, field, val->NumberValue());
+          if (preserve_int64 && val->IsArray()) {
+            Local<Object> n64_array = val->ToObject();
+            uint64 n64;
+            uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
+            n64 = ((uint64)hi << 32) + (uint64)lo;
+            r->SetInt64(message, field, n64);
+          } else
+            r->SetInt64(message, field, val->NumberValue());
         break;
       case FieldDescriptor::CPPTYPE_UINT32:
         if (repeated)
@@ -106,9 +126,23 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
         break;
       case FieldDescriptor::CPPTYPE_UINT64:
         if (repeated)
-          r->AddUInt64(message, field, val->NumberValue());
+          if (preserve_int64 && val->IsArray()) {
+            Local<Object> n64_array = val->ToObject();
+            uint64 n64;
+            uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
+            n64 = ((uint64)hi << 32) + (uint64)lo;
+            r->AddUInt64(message, field, n64);
+          } else
+            r->AddUInt64(message, field, val->NumberValue());
         else
-          r->SetUInt64(message, field, val->NumberValue());
+          if (preserve_int64 && val->IsArray()) {
+            Local<Object> n64_array = val->ToObject();
+            uint64 n64;
+            uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
+            n64 = ((uint64)hi << 32) + (uint64)lo;
+            r->SetUInt64(message, field, n64);
+          } else
+            r->SetUInt64(message, field, val->NumberValue());
         break;
       case FieldDescriptor::CPPTYPE_DOUBLE:
         if (repeated)
@@ -263,7 +297,19 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
         value = r->GetRepeatedInt64(message, field, index);
       else
         value = r->GetInt64(message, field);
-      v = Number::New(value);
+
+      // to retaing exact value if preserve_int64 flag was passed to constructor
+      // extract int64 as two int32
+      if (preserve_int64) {
+        uint32 hi, lo;
+        hi = (uint32) ((uint64)value >> 32);
+        lo = (uint32) value;
+        Local<Array> t = Array::New(2);
+        t->Set(0, Number::New(hi));
+        t->Set(1, Number::New(lo));
+        v = t;
+      } else
+        v = Number::New(value);
       break;
     }
     case FieldDescriptor::CPPTYPE_UINT32: {
@@ -281,7 +327,16 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
         value = r->GetRepeatedUInt64(message, field, index);
       else
         value = r->GetUInt64(message, field);
-      v = Number::New(value);
+      if (preserve_int64) {
+        uint32 hi, lo;
+        hi = (uint32) (value >> 32);
+        lo = (uint32) (value);
+        Local<Array> t = Array::New(2);
+        t->Set(0, Number::New(hi));
+        t->Set(1, Number::New(lo));
+        v = t;
+      } else
+        v = Number::New(value);
       break;
     }
     case FieldDescriptor::CPPTYPE_DOUBLE: {
