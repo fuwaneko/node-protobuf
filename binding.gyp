@@ -15,11 +15,11 @@
 						"AdditionalLibraryDirectories": "$(LIBPROTOBUF)/lib"
 					}
 				}
-			}, { # on linux and mac
+			}, {
 				"libraries": [
 					"-lprotobuf"
 				]
-			}],
+			}]
 		]
 	}]
 }
