@@ -10,6 +10,10 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Changelog
 
+### 1.0.4
+
++ Fixed incorrect parsing of optional nested messages
+
 ### 1.0.3
 
 + Fixed incorrect parsing of optional values (now they are omitted from result object if not present)
@@ -58,8 +62,8 @@ var pb = new p(fs.readFileSync("protocol.desc")) // obviously you can use async 
 var obj = {
 	"name": "value"
 }
-var buf = p.Serialize(obj, "MySchema") // you get Buffer here, send it via socket.write, etc.
-var newObj = p.Parse(buf, "MySchema") // you get plain object here, it should be exactly the same as obj
+var buf = pb.Serialize(obj, "MySchema") // you get Buffer here, send it via socket.write, etc.
+var newObj = pb.Parse(buf, "MySchema") // you get plain object here, it should be exactly the same as obj
 ```
 
 ### Construct

@@ -299,7 +299,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
       else
         value = r->GetInt64(message, field);
 
-      // to retaing exact value if preserve_int64 flag was passed to constructor
+      // to retain exact value if preserve_int64 flag was passed to constructor
       // extract int64 as two int32
       if (preserve_int64) {
         uint32 hi, lo;
@@ -375,10 +375,14 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
       break;
     }
     case FieldDescriptor::CPPTYPE_MESSAGE: {
-      if (index >= 0)
-        v = ParsePart(r->GetRepeatedMessage(message, field, index));
-      else
-        v = ParsePart(r->GetMessage(message, field));
+      if (field->is_optional() && !r->HasField(message, field))
+        v = Null();
+      else {
+        if (index >= 0)
+          v = ParsePart(r->GetRepeatedMessage(message, field, index));
+        else
+          v = ParsePart(r->GetMessage(message, field));
+      }
       break;
     }
     case FieldDescriptor::CPPTYPE_STRING: {
@@ -422,7 +426,7 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
         v = ParseField(message, r, field, -1);
       }
 
-      if (field->is_optional() && v->IsNull())
+      if (field->is_optional() && (v->IsNull() || !r->HasField(message, field)))
         continue;
       
       ret->Set(String::NewSymbol(field->name().c_str()), v);
