@@ -207,6 +207,7 @@ void SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 
   for (uint32_t i = 0; i < len; i++) {
     // TODO: iterate over descriptor properties?
+    // TODO: Yes, we must process required fields
     Local<Value> property = properties->Get(i);
     Local<String> property_s = property->ToString();
 
@@ -420,6 +421,9 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
       } else {
         v = ParseField(message, r, field, -1);
       }
+
+      if (field->is_optional() && v->IsNull())
+        continue;
       
       ret->Set(String::NewSymbol(field->name().c_str()), v);
     }

@@ -4,7 +4,15 @@ It's a very simple wrapper around protocol buffers library by Google.
 It uses dynamic message building and parsing based on protocol schema you can get by compiling protocol description.
 I know that wrappers do exist, but I didn't like them.
 
+## Issues
+
+* There is no check for required fields present while serializing
+
 ## Changelog
+
+### 1.0.3
+
++ Fixed incorrect parsing of optional values (now they are omitted from result object if not present)
 
 ### 1.0.2
 
@@ -36,7 +44,7 @@ Now just ``` npm install node-protobuf ``` and it should be fine.
 
 ### Mac OS X
 
-I don't have Mac, so if someone can describe procedure I'll be grateful.
+Looks like it's as simple as ``` brew install protobuf ``` before installing npm.
 
 ## Usage
 
