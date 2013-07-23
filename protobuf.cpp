@@ -184,6 +184,12 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
         }
         break;
       case FieldDescriptor::CPPTYPE_STRING:
+        if( Buffer::HasInstance(val)){
+          Local<Object> buf = val->ToObject();
+          r->SetString( message, field, std::string(Buffer::Data(buf), Buffer::Length(buf)));
+          break;
+        }
+
         String::Utf8Value temp(val->ToString());
         std::string value = std::string(*temp);
         if (repeated)
@@ -391,7 +397,10 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
         value = r->GetRepeatedString(message, field, index);
       else
         value = r->GetString(message, field);
-      v = String::New(value.c_str());
+      if (field->type() == FieldDescriptor::TYPE_BYTES)
+        v = Buffer::New(const_cast<char *>(value.data()), value.length())->handle_;
+      else
+        v = String::New(value.c_str());
       break;
     }
   }
