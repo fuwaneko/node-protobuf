@@ -10,6 +10,10 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Changelog
 
+### 1.0.5
+
++ Fixed incorrect parsing of byte datatype. Now it's parsed as Node.js Buffer and Buffer can be serialized into byte field. Big thanks to [xanm](https://github.com/AlexMarlo) for contributing.
+
 ### 1.0.4
 
 + Fixed incorrect parsing of optional nested messages
