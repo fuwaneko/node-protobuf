@@ -89,7 +89,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
   const EnumValueDescriptor *enumValue = NULL;
   bool repeated = field->is_repeated();
 
-  if (field != NULL && *val != NULL) {
+  if (*val != NULL) {
     switch (field->cpp_type()) {
       case FieldDescriptor::CPPTYPE_INT32: {
         if (repeated)
