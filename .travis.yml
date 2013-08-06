@@ -1,6 +1,8 @@
 language: node_js
 
-install: libprotobuf-dev
+before_install:
+	- sudo apt-get update -qq
+	- sudo apt-get install -qq libprotobuf-dev
 
 node_js:
 	- "0.10"
