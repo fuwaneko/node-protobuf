@@ -1,3 +1,4 @@
 build
 test.*
 .project
+node_modules

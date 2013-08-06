@@ -6,7 +6,14 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Issues
 
-* There is no check for required fields present while serializing
+* There is no check for required fields present when serializing
+
+## Roadmap
+
++ Add support for serializing and parsing int64 from/to JS String
++ Add asynchronous serialize and parse
++ Refactor code to make it more readable
++ Add check for required fields present when serializing
 
 ## Changelog
 
