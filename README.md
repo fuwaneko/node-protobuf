@@ -1,5 +1,7 @@
 # node-protobuf
 
+[![Build Status](https://travis-ci.org/fuwaneko/node-protobuf.png?branch=master)](https://travis-ci.org/fuwaneko/node-protobuf)
+
 It's a very simple wrapper around protocol buffers library by Google.
 It uses dynamic message building and parsing based on protocol schema you can get by compiling protocol description.
 I know that wrappers do exist, but I didn't like them.
