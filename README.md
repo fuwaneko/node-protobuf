@@ -19,6 +19,10 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Changelog
 
+### 1.0.6
+
++ Added check for correct argument type and handling for malformed protocol buffers.
+
 ### 1.0.5
 
 + Fixed incorrect parsing of byte datatype. Now it's parsed as Node.js Buffer and Buffer can be serialized into byte field. Big thanks to [xanm](https://github.com/AlexMarlo) for contributing.
@@ -101,4 +105,4 @@ Serializes plain object with accordance to protocol schema (i.e. message describ
 
 **Protobuf.Parse(buffer, schema)**
 
-Parses Buffer (or UInt8Array for example, just anything that is binary data array) according to schema and returns plain object.
+Parses Buffer (or UInt8Array for example, just anything that is binary data array) according to schema and returns plain object. If first argument isn't a Buffer, throws an exception. If Buffer is malformed (i.e. not a Protobuf), throws an exception.
