@@ -450,6 +450,11 @@ Handle<Value> Protobuf::Parse(const Arguments &args) {
 
   Protobuf* obj = ObjectWrap::Unwrap<Protobuf>(args.This());
 
+  if (!Buffer::HasInstance(args[0])) {
+    ThrowException(Exception::Error(String::New("First argument must be a Buffer")));
+    return scope.Close(Undefined());
+  }
+
   Local<Object> buffer_obj = args[0]->ToObject();
   char *buffer_data = Buffer::Data(buffer_obj);
   size_t buffer_length = Buffer::Length(buffer_obj);
@@ -461,13 +466,16 @@ Handle<Value> Protobuf::Parse(const Arguments &args) {
   DynamicMessageFactory factory;
   google::protobuf::Message *message = factory.GetPrototype(obj->pool->FindMessageTypeByName(schema_name))->New();
 
-  message->ParseFromArray(buffer_data, buffer_length);
+  bool parseResult = message->ParseFromArray(buffer_data, buffer_length);
 
-  Handle<Object> ret = ParsePart(*message);
-
-  delete message;
-
-  return scope.Close(ret);
+  if (parseResult) {
+    Handle<Object> ret = ParsePart(*message);
+    delete message;
+    return scope.Close(ret);
+  } else {
+    ThrowException(Exception::Error(String::New("Malformed protocol buffer")));
+    return scope.Close(Undefined());
+  }
 }
 
 void init(Handle<Object> exports) {
