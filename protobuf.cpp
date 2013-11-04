@@ -256,7 +256,13 @@ Handle<Value> Protobuf::Serialize(const Arguments &args) {
 
   // create a message based on schema
   DynamicMessageFactory factory;
-  google::protobuf::Message *message = factory.GetPrototype(obj->pool->FindMessageTypeByName(schema_name))->New();
+  const Descriptor *descriptor = obj->pool->FindMessageTypeByName(schema_name);
+  if (descriptor == NULL) {
+    std::string error = "Unknown schema name: " + schema_name;
+    ThrowException(Exception::Error(String::New(error.c_str())));
+    return scope.Close(Undefined());
+  }
+  google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
 
   SerializePart(message, subj);
 
@@ -464,7 +470,13 @@ Handle<Value> Protobuf::Parse(const Arguments &args) {
 
   // create a message based on schema
   DynamicMessageFactory factory;
-  google::protobuf::Message *message = factory.GetPrototype(obj->pool->FindMessageTypeByName(schema_name))->New();
+  const Descriptor *descriptor = obj->pool->FindMessageTypeByName(schema_name);
+  if (descriptor == NULL) {
+    std::string error = "Unknown schema name: " + schema_name;
+    ThrowException(Exception::Error(String::New(error.c_str())));
+    return scope.Close(Undefined());
+  }
+  google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
 
   bool parseResult = message->ParseFromArray(buffer_data, buffer_length);
 
