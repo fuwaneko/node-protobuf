@@ -19,6 +19,10 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Changelog
 
+### 1.0.7
+
++ Fixed segfault on incorrect schema name.
+
 ### 1.0.6
 
 + Added check for correct argument type and handling for malformed protocol buffers.
