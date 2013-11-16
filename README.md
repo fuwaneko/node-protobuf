@@ -19,6 +19,11 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Changelog
 
+### 1.0.8
+
++ Fixed build on Mac OS X 10.9
++ Updated README with better example
+
 ### 1.0.7
 
 + Fixed segfault on incorrect schema name.
@@ -83,8 +88,16 @@ var pb = new p(fs.readFileSync("protocol.desc")) // obviously you can use async 
 var obj = {
 	"name": "value"
 }
-var buf = pb.Serialize(obj, "MySchema") // you get Buffer here, send it via socket.write, etc.
-var newObj = pb.Parse(buf, "MySchema") // you get plain object here, it should be exactly the same as obj
+try {
+	var buf = pb.Serialize(obj, "MySchema") // you get Buffer here, send it via socket.write, etc.
+} catch (e) {
+	// will throw if MySchema does not exist
+}
+try {
+	var newObj = pb.Parse(buf, "MySchema") // you get plain object here, it should be exactly the same as obj
+} catch (e) {
+	// will throw on invalid buffer or if MySchema does not exist
+}
 ```
 
 ### Construct
@@ -103,7 +116,7 @@ Also, if you don't care about int64/uint64 presicion in JS, you can forget about
 
 **Protobuf.Serialize(object, schema)**
 
-Serializes plain object with accordance to protocol schema (i.e. message described in you protocol description file). Returns Node.js Buffer.
+Serializes plain object with accordance to protocol schema (i.e. message described in you protocol description file). Returns Node.js Buffer. Throws an exception if schema does not exist.
 
 ### Parse
 
