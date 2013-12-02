@@ -184,9 +184,12 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
         }
         break;
       case FieldDescriptor::CPPTYPE_STRING:
-        if( Buffer::HasInstance(val)){
+        if (Buffer::HasInstance(val)) {
           Local<Object> buf = val->ToObject();
-          r->SetString( message, field, std::string(Buffer::Data(buf), Buffer::Length(buf)));
+          if (repeated)
+          	r->AddString(message, field, std::string(Buffer::Data(buf), Buffer::Length(buf)));
+          else
+          	r->SetString(message, field, std::string(Buffer::Data(buf), Buffer::Length(buf)));
           break;
         }
 
