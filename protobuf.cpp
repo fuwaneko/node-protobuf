@@ -279,17 +279,18 @@ Handle<Value> Protobuf::Serialize(const Arguments &args) {
         v8::Exception::Error(String::New("Can't serialize")));
   }
 
-  // obtain Node.js Buffer constructor
-  Local<Object> gScope = Context::GetCurrent()->Global();
-  Local<Function> bConstructor = Local<Function>::Cast(gScope->Get(String::New("Buffer")));
+  // // obtain Node.js Buffer constructor
+  // Local<Object> gScope = Context::GetCurrent()->Global();
+  // Local<Function> bConstructor = Local<Function>::Cast(gScope->Get(String::New("Buffer")));
 
-  // construct Node.js Buffer
-  Handle<Value> constructorArgs[3] = { buf->handle_, Integer::New(size), Integer::New(0) };
-  Local<Object> actualBuffer = bConstructor->NewInstance(3, constructorArgs);
+  // // construct Node.js Buffer
+  // Handle<Value> constructorArgs[3] = { buf->handle_, Integer::New(size), Integer::New(0) };
+  // Local<Object> actualBuffer = bConstructor->NewInstance(3, constructorArgs);
 
   delete message;
 
-  return scope.Close(actualBuffer);
+  //return scope.Close(actualBuffer);
+  return scope.Close(buf->handle_);
 }
 
 Handle<Object> ParsePart(const google::protobuf::Message &message);
