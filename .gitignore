@@ -2,3 +2,4 @@ build
 test.*
 .project
 node_modules
+test/fixtures/*.desc
