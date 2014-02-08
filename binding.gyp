@@ -18,8 +18,12 @@
 			}],
             ["OS == 'mac'", {
                 "libraries": [
-                    "-lprotobuf"
+                    "-lprotobuf",
+                    "-L$(LIBPROTOBUF)/lib/"
                 ],
+				"include_dirs": [
+					"$(LIBPROTOBUF)/include"
+				],
                 "xcode_settings": {
                     "MACOSX_DEPLOYMENT_TARGET": "10.7",
                     "OTHER_CPLUSPLUSFLAGS": [
