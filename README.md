@@ -75,6 +75,7 @@ Now just ``` npm install node-protobuf ``` and it should be fine.
 ### Mac OS X
 
 Looks like it's as simple as ``` brew install protobuf ``` before installing npm.
+And then ``` LIBPROTOBUF=/usr/local/Cellar/protobuf/2.5.0 npm install node-protobuf ```.
 
 ## Usage
 
