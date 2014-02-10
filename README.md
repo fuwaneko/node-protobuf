@@ -123,3 +123,24 @@ Serializes plain object with accordance to protocol schema (i.e. message describ
 **Protobuf.Parse(buffer, schema)**
 
 Parses Buffer (or UInt8Array for example, just anything that is binary data array) according to schema and returns plain object. If first argument isn't a Buffer, throws an exception. If Buffer is malformed (i.e. not a Protobuf), throws an exception.
+
+### Enums handling
+
+While serializing you can supply either strings or integers as enum values. E.g. you can pass
+```JavaScript
+obj = {
+  enumValue: "first"
+}
+
+// also valid
+obj = {
+  enumValue: 0
+}
+```
+
+While parsing you *always* get string. E.g. after parsing buffers serialized from both objects from above you'll get this:
+```JavaScript
+parsedObj = {
+  enumValue: "first"
+}
+```
