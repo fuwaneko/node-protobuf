@@ -16,17 +16,19 @@
 					}
 				}
 			}],
-			["OS == 'mac'", {
-				"libraries": [
-					"-lprotobuf"
-				],
-				"xcode_settings": {
-					"MACOSX_DEPLOYMENT_TARGET": "10.7",
-					"OTHER_CPLUSPLUSFLAGS": [
-						"-stdlib=libc++"
-					]
-				}
-			}],
+            ["OS == 'mac'", {
+                "libraries": [
+                    "-lprotobuf",
+                    "-L/usr/local/lib"
+                ],
+                "xcode_settings": {
+                    "MACOSX_DEPLOYMENT_TARGET": "10.7",
+                    "OTHER_CPLUSPLUSFLAGS": [
+                        "-stdlib=libc++",
+                        "-I/usr/local/include"
+                    ]
+                }
+            }],
 			["OS == 'linux'", {
 				"libraries": [
 					"-lprotobuf"
