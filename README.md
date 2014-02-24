@@ -17,37 +17,6 @@ I know that wrappers do exist, but I didn't like them.
 + Refactor code to make it more readable
 + Add check for required fields present when serializing
 
-## Changelog
-
-### 1.0.8
-
-+ Fixed build on Mac OS X 10.9
-+ Updated README with better example
-
-### 1.0.7
-
-+ Fixed segfault on incorrect schema name.
-
-### 1.0.6
-
-+ Added check for correct argument type and handling for malformed protocol buffers.
-
-### 1.0.5
-
-+ Fixed incorrect parsing of byte datatype. Now it's parsed as Node.js Buffer and Buffer can be serialized into byte field. Big thanks to [xanm](https://github.com/AlexMarlo) for contributing.
-
-### 1.0.4
-
-+ Fixed incorrect parsing of optional nested messages
-
-### 1.0.3
-
-+ Fixed incorrect parsing of optional values (now they are omitted from result object if not present)
-
-### 1.0.2
-
-+ Added experimental support for 64-bit precision integers (look below for constructor arguments)
-
 ## Requirements
 
 * Protocol Buffers >= 2.1.0
@@ -62,7 +31,7 @@ Simple, huh?
 
 ### Windows
 
-First you have to obtain Microsoft Visual C++ 2010. Express is fine, but if you install SP1 then you'll need to reinstall x64 compilers from [here](http://www.microsoft.com/en-us/download/details.aspx?id=4422). Node.js distribution for Windows already includes node-gyp tool, so you don't need to worry about it.
+First you have to obtain Microsoft Visual C++ 2010. Express is fine, but if you install SP1 then you'll need to reinstall x64 compilers from [here](http://www.microsoft.com/en-us/download/details.aspx?id=4422). Node.js distribution for Windows already includes node-gyp tool, so you don't need to worry about it. VC++ 2012/2013 should work as long as you have compiler version compatible with your Node.js installation (i.e. 64 for 64 and 32 for 32). For any problems compiling native modules on Windows consult [node-gyp](https://github.com/TooTallNate/node-gyp) repository.
 
 Next, compile libprotobuf. Get it from Google, open vsprojects/protobuf.sln and compile it according to your OS version. For Windows 64 you *must* compile 64-bit library as Node.js is 64-bit on your system. By default there is only 32-bit target, so you have to add 64-bit manually. Open libprotobuf project properties and set CRT to Multi-Threaded (*not* DLL). Compile libprotobuf Release.
 
