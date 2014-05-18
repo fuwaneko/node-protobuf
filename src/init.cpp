@@ -7,16 +7,12 @@ std::map< DescriptorPool*, Persistent<Object> > d;
 
 // free descriptor pool when it's not needed anymore
 void freeDescriptor(Persistent<Value> object, void *parameter) {
-	cout << "Weak callback called" << std::endl;
-
 	DescriptorPool *pool = static_cast<DescriptorPool*>(parameter);
 	d.erase(pool);
 	delete pool;
 
 	object.Dispose();
 	object.Clear();
-
-	std::cout << "Descriptor pool size: " << d.size() << std::endl;
 }
 
 NAN_METHOD(libraryInit) {
@@ -49,8 +45,6 @@ NAN_METHOD(libraryInit) {
 
 	d[pool] = p_pool;
 	p_pool->SetInternalField(0, External::New(pool));
-
-	cout << "Descriptor pool size: " << d.size() << std::endl;
 
 	NanReturnValue(p_pool);
 }

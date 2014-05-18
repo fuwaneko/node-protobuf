@@ -8,15 +8,11 @@
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/service.h>
 
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
-#include <string>
-
 using namespace google::protobuf;
 using namespace v8;
 using namespace node;
 
-static bool preserve_int64 = true;
+// disable for now
+static bool preserve_int64 = false;
 
 extern std::map< DescriptorPool*, Persistent<Object> > d;

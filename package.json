@@ -14,7 +14,11 @@
   ],
   "licence": "MIT",
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-release": "~0.5.1"
+    "grunt": ">=0.4.1",
+    "grunt-release": ">=0.5.1",
+    "mocha": ">=1.19.0"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha ./test/ -R spec"
   }
 }
