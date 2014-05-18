@@ -3,9 +3,12 @@
   "version": "1.0.12",
   "description": "A Node.js protocol buffer wrapper",
   "author": "Dmitry Gorbunov <atskiisotona@gmail.com",
-  "main": "./build/Release/protobuf.node",
+  "main": "protobuf.js",
   "repository": "https://github.com/fuwaneko/node-protobuf",
-  "dependencies": {},
+  "dependencies": {
+    "bindings": "^1.2.0",
+    "nan": "^1.0.0"
+  },
   "engines": [
     "node >= 0.10.0"
   ],
