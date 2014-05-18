@@ -6,6 +6,16 @@ It's a very simple wrapper around protocol buffers library by Google.
 It uses dynamic message building and parsing based on protocol schema you can get by compiling protocol description.
 I know that wrappers do exist, but I didn't like them.
 
+## Current status
+
+I am working on asynchronous parsing and serializing, hope it will be ready by Node.js 0.12 release. I also plan to add required fields check as soon as possible.
+
+Also there is an important note about v1.1.0:
+
+```JavaScript
+var p = require("node-protobuf") // note there is no .Protobuf part anymore
+```
+
 ## Issues
 
 * There is no check for required fields present when serializing
