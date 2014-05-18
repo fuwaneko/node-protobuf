@@ -3,15 +3,22 @@
   "version": "1.0.12",
   "description": "A Node.js protocol buffer wrapper",
   "author": "Dmitry Gorbunov <atskiisotona@gmail.com",
-  "main": "./build/Release/protobuf.node",
+  "main": "protobuf.js",
   "repository": "https://github.com/fuwaneko/node-protobuf",
-  "dependencies": {},
+  "dependencies": {
+    "bindings": ">=1.2.0",
+    "nan": ">=1.0.0"
+  },
   "engines": [
     "node >= 0.10.0"
   ],
   "licence": "MIT",
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-release": "~0.5.1"
+    "grunt": ">=0.4.1",
+    "grunt-release": ">=0.5.1",
+    "mocha": ">=1.19.0"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha ./test/ -R spec"
   }
 }

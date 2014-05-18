@@ -1,14 +1,15 @@
 {
 	"targets": [{
 		"target_name": "protobuf",
-		"sources": [ "protobuf.cpp" ],
+		"sources": [ "./src/init.cpp", "./src/parse.cpp", "./src/serialize.cpp" ],
 		"conditions": [
 			["OS == 'win'", {
 				"libraries": [
 					"-llibprotobuf.lib"
 				],
 				"include_dirs": [
-					"$(LIBPROTOBUF)/include"
+					"$(LIBPROTOBUF)/include",
+					"<!(node -e \"require('nan')\")"
 				],
 				"msvs_settings": {
 					"VCLinkerTool": {
@@ -21,6 +22,9 @@
 					"-lprotobuf",
 					"-L/usr/local/lib"
 				],
+				"include_dirs": [
+					"<!(node -e \"require('nan')\")"
+				],
 				"xcode_settings": {
 					"MACOSX_DEPLOYMENT_TARGET": "10.7",
 					"OTHER_CPLUSPLUSFLAGS": [
@@ -32,6 +36,9 @@
 			["OS == 'linux'", {
 				"libraries": [
 					"-lprotobuf"
+				],
+				"include_dirs": [
+					"<!(node -e \"require('nan')\")"
 				]
 			}]
 		]

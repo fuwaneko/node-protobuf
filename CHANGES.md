@@ -1,5 +1,10 @@
 ## Changelog
 
+### 1.1.0
+
++ Reorganized code, moved part of logic to JS wrapper
++ Prepared for Node.js 0.12 release
+
 ### 1.0.12
 
 + Fixed incorrect compiler behaviour on Mac OS X on some systems
