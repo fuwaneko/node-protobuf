@@ -163,6 +163,18 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
 	NanReturnValue(ret);
 }
 
+NAN_METHOD(lookupMessage) {
+        NanScope();
+    
+	Local<Value> p_pool = args[0]->ToObject()->GetInternalField(0);
+	DescriptorPool *pool = static_cast<DescriptorPool*>(External::Unwrap(p_pool));
+    
+	String::Utf8Value schemaName(args[1]->ToString());
+	std::string schema_name = std::string(*schemaName);
+    
+	NanReturnValue(pool->FindMessageTypeByName(schema_name) ? NanTrue() : NanFalse());
+}
+
 NAN_METHOD(Parse) {
 	NanScope();
 

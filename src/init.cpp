@@ -53,6 +53,7 @@ void init(Handle<Object> exports) {
   exports->Set(NanSymbol("init"), NanNew<FunctionTemplate>(libraryInit)->GetFunction());
 
   exports->Set(NanSymbol("parse"), NanNew<FunctionTemplate>(Parse)->GetFunction());
+  exports->Set(NanSymbol("lookupMessage"), NanNew<FunctionTemplate>(lookupMessage)->GetFunction());
   //exports->Set(NanSymbol("parseAsync"), NanNew<FunctionTemplate>(parseAsync)->GetFunction());
 
   exports->Set(NanSymbol("serialize"), NanNew<FunctionTemplate>(Serialize)->GetFunction());
