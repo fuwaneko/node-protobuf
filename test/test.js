@@ -61,6 +61,20 @@ describe("Basic", function() {
 			delete objWithNull.value;
 			assert.deepEqual(objWithNull, parsed)
 		})
+
+		it("Should ignore optional undefined fields", function() {
+			var objWithNull = {
+				"name": "test",
+				"n64": 123,
+				"value": undefined
+			}
+			
+			var buffer = pb.serialize(objWithNull, "Test")
+			var parsed = pb.parse(buffer, "Test")
+
+			delete objWithNull.value;
+			assert.deepEqual(objWithNull, parsed)
+		})
 	})
 })
 
