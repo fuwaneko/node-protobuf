@@ -7,7 +7,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 	bool repeated = field->is_repeated();
 
 	if (*val != NULL) {
-		if (field->is_optional() && val->IsNull())
+		if (field->is_optional() && (val->IsNull() || val->IsUndefined()))
 			return;
 		
 		switch (field->cpp_type()) {
