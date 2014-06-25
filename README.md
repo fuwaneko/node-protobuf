@@ -61,7 +61,7 @@ You are *not* required to generate any JS code from your protocol buffer descrip
 
 ```
 var fs = require("fs")
-var p = require("node-protobuf").Protobuf
+var p = require("node-protobuf")
 // WARNING: next call will throw if desc file is invalid
 var pb = new p(fs.readFileSync("protocol.desc")) // obviously you can use async methods, it's for simplicity reasons
 var obj = {
