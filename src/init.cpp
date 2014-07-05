@@ -50,9 +50,9 @@ NAN_METHOD(libraryInit) {
 }
 
 void init(Handle<Object> exports) {
-  exports->Set(NanSymbol("init"), NanNew<FunctionTemplate>(libraryInit)->GetFunction());
-  exports->Set(NanSymbol("parse"), NanNew<FunctionTemplate>(Parse)->GetFunction());
-  exports->Set(NanSymbol("serialize"), NanNew<FunctionTemplate>(Serialize)->GetFunction());
+  exports->Set(NanNew<String>("init"), NanNew<FunctionTemplate>(libraryInit)->GetFunction());
+  exports->Set(NanNew<String>("parse"), NanNew<FunctionTemplate>(Parse)->GetFunction());
+  exports->Set(NanNew<String>("serialize"), NanNew<FunctionTemplate>(Serialize)->GetFunction());
 }
 
 NODE_MODULE(protobuf, init)
