@@ -124,21 +124,34 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 	}
 }
 
-void SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
+int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 	NanScope();
 
 	// get a reflection
 	const Reflection *r = message->GetReflection();
 	const Descriptor *d = message->GetDescriptor();
+	
+	// build a list of required properties
+	vector<string> required;
+	for (int i = 0; i < d->field_count(); i++) {
+		const FieldDescriptor *field = d->field(i);
+		if (field->is_required())
+			required.push_back(field->name());
+	}
 
 	// build a reflection
 	// get properties of passed object
 	Local<Array> properties = subj->GetPropertyNames();
 	uint32_t len = properties->Length();
+	
+	// check that all required properties are present
+	for (uint32_t i = 0; i < required.size(); i++) {
+		Handle<String> key = String::New(required.at(i).c_str());
+		if (!subj->Has(key))
+			return -1;
+	}
 
 	for (uint32_t i = 0; i < len; i++) {
-		// TODO: iterate over descriptor properties?
-		// TODO: Yes, we must process required fields
 		Local<Value> property = properties->Get(i);
 		Local<String> property_s = property->ToString();
 
@@ -167,6 +180,8 @@ void SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 			SerializeField(message, r, field, val);
 		}
 	}
+	
+	return 0;
 }
 
 NAN_METHOD(Serialize) {
@@ -190,7 +205,10 @@ NAN_METHOD(Serialize) {
 
 	google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
 
-	SerializePart(message, subj);
+	if (SerializePart(message, subj) < 0) {
+		// required field not present!
+		NanReturnNull();
+	}
 
 	// make JS Buffer instead of SlowBuffer
 	int size = message->ByteSize();

@@ -20,6 +20,19 @@ describe("Basic", function() {
 				pb.serialize(obj, "I don't exist")
 			}, Error)
 		})
+		
+		it("Should throw an error on missing required fields", function() {
+			assert.throws(function () {
+				pb.serialize({}, "Test")
+			})
+		})
+		
+		it("Should serialize asynchronously", function(done) {
+			pb.serialize(obj, "Test", function (error, buf) {
+				if (!Buffer.isBuffer(buf)) throw new Error("Invalid result")
+				done()
+			})
+		})
 	})
 
 	describe("Parse", function() {
@@ -27,6 +40,15 @@ describe("Basic", function() {
 			var buffer = pb.serialize(obj, "Test")
 			var parsed = pb.parse(buffer, "Test")
 			assert.deepEqual(obj, parsed)
+		})
+		
+		it("Should do previous step asynchronously", function(done) {
+			var buffer = pb.serialize(obj, "Test")
+			
+			pb.parse(buffer, "Test", function (error, parsed) {
+				assert.deepEqual(obj, parsed)
+				done()
+			})
 		})
 
 		it("Should throw an error on invalid argument", function() {

@@ -1,5 +1,14 @@
 ## Changelog
 
+### 1.1.2
+
++ Added check for required fields while serializing
++ Added "async" variant of functions
+
+### 1.1.1
+
++ Fixed incorrect optional fields serialization for null and undefined values (thanks to [Eric Laberge](https://github.com/elaberge))
+
 ### 1.1.0
 
 + Reorganized code, moved part of logic to JS wrapper

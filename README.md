@@ -10,22 +10,9 @@ I know that wrappers do exist, but I didn't like them.
 
 I am working on asynchronous parsing and serializing, hope it will be ready by Node.js 0.12 release. I also plan to add required fields check as soon as possible.
 
-Also there is an important note about v1.1.0:
-
-```JavaScript
-var p = require("node-protobuf") // note there is no .Protobuf part anymore
-```
-
-## Issues
-
-* There is no check for required fields present when serializing
-
 ## Roadmap
 
-+ Add support for serializing and parsing int64 from/to JS String
-+ Add asynchronous serialize and parse
-+ Refactor code to make it more readable
-+ Add check for required fields present when serializing
++ Add better support for serializing and parsing int64 from/to JS String
 
 ## Requirements
 
@@ -61,19 +48,19 @@ You are *not* required to generate any JS code from your protocol buffer descrip
 
 ```
 var fs = require("fs")
-var p = require("node-protobuf").Protobuf
+var p = require("node-protobuf") // note there is no .Protobuf part anymore
 // WARNING: next call will throw if desc file is invalid
 var pb = new p(fs.readFileSync("protocol.desc")) // obviously you can use async methods, it's for simplicity reasons
 var obj = {
 	"name": "value"
 }
 try {
-	var buf = pb.Serialize(obj, "MySchema") // you get Buffer here, send it via socket.write, etc.
+	var buf = pb.serialize(obj, "MySchema") // you get Buffer here, send it via socket.write, etc.
 } catch (e) {
 	// will throw if MySchema does not exist
 }
 try {
-	var newObj = pb.Parse(buf, "MySchema") // you get plain object here, it should be exactly the same as obj
+	var newObj = pb.parse(buf, "MySchema") // you get plain object here, it should be exactly the same as obj
 } catch (e) {
 	// will throw on invalid buffer or if MySchema does not exist
 }
@@ -93,15 +80,27 @@ Also, if you don't care about int64/uint64 presicion in JS, you can forget about
 
 ### Serialize
 
-**Protobuf.Serialize(object, schema)**
+**Protobuf.serialize(object, schema, [callback])**
 
-Serializes plain object with accordance to protocol schema (i.e. message described in you protocol description file). Returns Node.js Buffer. Throws an exception if schema does not exist.
+Serializes plain object with accordance to protocol schema (i.e. message described in you protocol description file).
 
-### Parse
+Accepts optional callback parameter which is essentially a function in Node.js callback style, i.e. function(error, result) {}. In case of exceptions (see below) they are passed as first parameter to callback.
 
-**Protobuf.Parse(buffer, schema)**
+- Returns Node.js Buffer
+- Throws if schema does not exist
+- Throws if required fields are not present
 
-Parses Buffer (or UInt8Array for example, just anything that is binary data array) according to schema and returns plain object. If first argument isn't a Buffer, throws an exception. If Buffer is malformed (i.e. not a Protobuf), throws an exception.
+### parse
+
+**Protobuf.parse(buffer, schema, [callback])**
+
+Parses Buffer (or UInt8Array for example, just anything that is binary data array) according to schema.
+
+Accepts optional callback parameter which is essentially a function in Node.js callback style, i.e. function(error, result) {}. In case of exceptions (see below) they are passed as first parameter to callback.
+
+- Returns plain object
+- Throws if first argument isn't a Buffer
+- Throws if Buffer is malformed (i.e. not a Protobuf)
 
 ### Enums handling
 

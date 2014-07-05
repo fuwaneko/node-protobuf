@@ -181,7 +181,7 @@ NAN_METHOD(Parse) {
 	const Descriptor *descriptor = pool->FindMessageTypeByName(schema_name);
 	if (descriptor == NULL) {
 		NanThrowError(("Unknown schema name: " + schema_name).c_str());
-		NanReturnUndefined();
+		NanReturnNull();
 	}
 	google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
 
@@ -193,6 +193,6 @@ NAN_METHOD(Parse) {
 		NanReturnValue(ret);
 	} else {
 		NanThrowError("Malformed protocol buffer");
-		NanReturnUndefined();
+		NanReturnNull();
 	}
 }
