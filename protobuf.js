@@ -30,14 +30,27 @@ pb_wrapper.prototype.parse = function() {
 	var buffer = arguments[0]
 	var schema = arguments[1]
 	var callback = arguments[2] || null
+	var pool = this.pool
 
 	if (!Buffer.isBuffer(buffer))
 		throw new Error("First argument must be a Buffer")
 
-	if (callback === null)
-		return protobuf.parse(this.pool, buffer, schema)
+	if (callback === null) {
+		var result = protobuf.parse(pool, buffer, schema)
+		if (result === null)
+			throw new Error("Unexpected error while parsing " + schema)
+		else
+			return result
+	}
 	else
-		protobuf.parseAsync(this.pool, buffer, schema, callback)
+		process.nextTick(function() {
+			try {
+				var result = protobuf.parse(pool, buffer, schema)
+				callback(null, result)
+			} catch (e) {
+				callback(e, null)
+			}
+		})
 }
 
 pb_wrapper.prototype.serialize = function() {
@@ -47,11 +60,27 @@ pb_wrapper.prototype.serialize = function() {
 	var object = arguments[0]
 	var schema = arguments[1]
 	var callback = arguments[2] || null
+	var pool = this.pool
 
-	if (callback === null)
-		return protobuf.serialize(this.pool, object, schema)
+	if (callback === null) {
+		var result = protobuf.serialize(pool, object, schema)
+		if (result === null)
+			throw new Error("Missing required fields while serializing " + schema)
+		else
+			return result
+	}
 	else
-		protobuf.serializeAsync(this.pool, object, schema, callback)
+		process.nextTick(function() {
+			try {
+				var result = protobuf.serialize(pool, object, schema)
+				if (result === null)
+					callback(Error("Missing required fields during serializing " + schema), null)
+				else
+					callback(null, result)
+			} catch (e) {
+				callback(e, null)
+			}
+		})
 }
 
 // backward compatibility
