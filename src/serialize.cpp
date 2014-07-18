@@ -113,6 +113,22 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 					break;
 				}
 
+				if (val->IsObject()) {
+					Local<Object> val2 = val->ToObject();
+					Local<Value> converter = val2->Get(String::NewSymbol("toProtobuf"));
+					if (converter->IsFunction()) {
+						Local<Function> toProtobuf = Local<Function>::Cast(converter);
+						Local<Value> ret = toProtobuf->Call(val2,0,NULL);
+						if (Buffer::HasInstance(ret)) {
+							Local<Object> buf = ret->ToObject();
+							if (repeated)
+								r->AddString(message, field, std::string(Buffer::Data(buf), Buffer::Length(buf)));
+							else
+								r->SetString(message, field, std::string(Buffer::Data(buf), Buffer::Length(buf)));
+							break;
+						}
+					}
+				}
 				String::Utf8Value temp(val->ToString());
 				std::string value = std::string(*temp);
 				if (repeated)
