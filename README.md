@@ -8,7 +8,13 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Current status
 
-I am working on asynchronous parsing and serializing, hope it will be ready by Node.js 0.12 release. I also plan to add required fields check as soon as possible.
+Preparing for Node.js v0.12
+
+## Custom buffers
+
+Any string/byte field you pass to Serialize can have optional toProtobuf method which must return Buffer.
+Thanks to [cleverca22](https://github.com/cleverca22) for this nice suggestion and pull.
+TODO: example and test
 
 ## Roadmap
 
