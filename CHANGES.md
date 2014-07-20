@@ -1,5 +1,14 @@
 ## Changelog
 
+### 1.2.0
+
++ Works with Node.js v0.11.3
++ Added info method to get a list of all schemas in descriptor
+
+### 1.1.4
+
++ Added handling of toProtobuf method for STRING fields.
+
 ### 1.1.2
 
 + Added check for required fields while serializing

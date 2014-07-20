@@ -98,77 +98,13 @@ describe("Basic", function() {
 			assert.deepEqual(objWithNull, parsed)
 		})
 	})
+
+	describe("Info", function() {
+		it("Should return correct info about descriptor", function() {
+			var info = pb.info()
+			var compare = [ "Test", "Data" ]
+
+			assert.deepEqual(info, compare)
+		})
+	})
 })
-
-/*
-// test optional
-var obj = {
-	"name": "test",
-	"n64": 123,
-	"type": "DEFAULT"
-}
-
-var buf = pb.Serialize(obj, "Test")
-var newObj = pb.Parse(buf, "Test")
-
-console.log("Optional fields test 1:\n", require("util").inspect(newObj, {colors: true, showHidden: true, depth: null}))
-
-obj = {
-	"name": "test",
-	"n64": 123,
-	"value": "messages",
-	"data": {
-		"sender": "me",
-		"recipient": "other",
-		"message": "hello"
-	},
-	"type": 2
-}
-
-buf = pb.Serialize(obj, "Test")
-newObj = pb.Parse(buf, "Test")
-
-console.log("Optional fields test 2:\n", require("util").inspect(newObj, {colors: true, showHidden: true, depth: null}))
-
-try {
-	newObj = pb.Parse(new Buffer("Bad buffer"), "Test")
-} catch (e) {
-	console.log(e)
-	if (e.trace)
-		console.log(e.trace)
-}
-
-try {
-	newObj = pb.Parse("Bad argument", "Test")
-} catch (e) {
-	console.log(e)
-	if (e.trace)
-		console.log(e.trace)
-}
-
-try {
-	buf = pb.Serialize(obj, "Idonotexist")
-} catch (e) {
-	console.log(e)
-	if (e.trace)
-		console.log(e.trace)
-}
-
-console.log("Testing memory leaks")
-
-function leak() {
-	try {
-		var buf = pb.Serialize(obj, "Test")
-		buf = null
-	} catch (e) {
-		console.log(e)
-		if (e.trace)
-			console.log(e.trace)
-	}
-}
-
-var i = 0
-while (i++ < 10000) {
-	setTimeout(leak, 100)
-}
-*/

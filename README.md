@@ -8,7 +8,7 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Current status
 
-Preparing for Node.js v0.12
+Preparing for Node.js v0.12. Current version compiles and works with v0.11.13.
 
 ## Custom buffers
 
@@ -96,7 +96,7 @@ Accepts optional callback parameter which is essentially a function in Node.js c
 - Throws if schema does not exist
 - Throws if required fields are not present
 
-### parse
+### Parse
 
 **Protobuf.parse(buffer, schema, [callback])**
 
@@ -107,6 +107,19 @@ Accepts optional callback parameter which is essentially a function in Node.js c
 - Returns plain object
 - Throws if first argument isn't a Buffer
 - Throws if Buffer is malformed (i.e. not a Protobuf)
+
+### Info
+
+**Protobuf.info()**
+
+In case you want to get list of all available schemas in a descriptor, just call this method.
+
+Thanks to [@colprog](https://github.com/colprog) for a suggestion.
+
+```JavaScript
+var schemas = pb.info()
+// returns an array, e.g. [ "Test", "Data" ] for test suite (see test/test.proto and compare)
+```
 
 ### Enums handling
 

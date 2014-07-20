@@ -1,3 +1,6 @@
+#ifndef COMMON_H
+#define COMMON_H
+
 #include <v8.h>
 
 #include <node.h>
@@ -15,4 +18,4 @@ using namespace node;
 // disable for now
 static bool preserve_int64 = false;
 
-extern std::map< DescriptorPool*, Persistent<Object> > d;
+#endif

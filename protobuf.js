@@ -16,7 +16,7 @@ function pb_wrapper() {
 
 	assert(descriptor, "Descriptor must be provided")
 
-	this.pool = protobuf.init(descriptor, int64)
+	this.native = new protobuf.native(descriptor)
 }
 
 pb_wrapper.prototype.parse = function() {
@@ -26,13 +26,13 @@ pb_wrapper.prototype.parse = function() {
 	var buffer = arguments[0]
 	var schema = arguments[1]
 	var callback = arguments[2] || null
-	var pool = this.pool
+	var native = this.native
 
 	if (!Buffer.isBuffer(buffer))
 		throw new Error("First argument must be a Buffer")
 
 	if (callback === null) {
-		var result = protobuf.parse(pool, buffer, schema)
+		var result = native.parse(buffer, schema)
 		if (result === null)
 			throw new Error("Unexpected error while parsing " + schema)
 		else
@@ -41,7 +41,7 @@ pb_wrapper.prototype.parse = function() {
 	else
 		process.nextTick(function() {
 			try {
-				var result = protobuf.parse(pool, buffer, schema)
+				var result = native.parse(buffer, schema)
 				callback(null, result)
 			} catch (e) {
 				callback(e, null)
@@ -56,10 +56,10 @@ pb_wrapper.prototype.serialize = function() {
 	var object = arguments[0]
 	var schema = arguments[1]
 	var callback = arguments[2] || null
-	var pool = this.pool
+	var native = this.native
 
 	if (callback === null) {
-		var result = protobuf.serialize(pool, object, schema)
+		var result = native.serialize(object, schema)
 		if (result === null)
 			throw new Error("Missing required fields while serializing " + schema)
 		else
@@ -68,7 +68,7 @@ pb_wrapper.prototype.serialize = function() {
 	else
 		process.nextTick(function() {
 			try {
-				var result = protobuf.serialize(pool, object, schema)
+				var result = native.serialize(object, schema)
 				if (result === null)
 					callback(Error("Missing required fields during serializing " + schema), null)
 				else
@@ -77,6 +77,10 @@ pb_wrapper.prototype.serialize = function() {
 				callback(e, null)
 			}
 		})
+}
+
+pb_wrapper.prototype.info = function() {
+	return this.native.info();
 }
 
 // backward compatibility

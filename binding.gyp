@@ -1,7 +1,7 @@
 {
 	"targets": [{
 		"target_name": "protobuf",
-		"sources": [ "./src/init.cpp", "./src/parse.cpp", "./src/serialize.cpp" ],
+		"sources": [ "./src/init.cpp", "./src/native.cpp", "./src/parse.cpp", "./src/serialize.cpp" ],
 		"conditions": [
 			["OS == 'win'", {
 				"libraries": [

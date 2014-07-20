@@ -83,10 +83,12 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 					r->SetBool(message, field, val->BooleanValue());
 				break;
 			case FieldDescriptor::CPPTYPE_ENUM:
+				// TODO: possible memory leak?
+				size_t count;
 				enumValue =
 					val->IsNumber() ?
 						field->enum_type()->FindValueByNumber(val->Int32Value()) :
-						field->enum_type()->FindValueByName(*String::AsciiValue(val));
+						field->enum_type()->FindValueByName(NanCString(val, &count));
 
 				if (enumValue != NULL) {
 					if (repeated)
@@ -115,7 +117,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 
 				if (val->IsObject()) {
 					Local<Object> val2 = val->ToObject();
-					Local<Value> converter = val2->Get(String::NewSymbol("toProtobuf"));
+					Local<Value> converter = val2->Get(NanNew<String>("toProtobuf"));
 					if (converter->IsFunction()) {
 						Local<Function> toProtobuf = Local<Function>::Cast(converter);
 						Local<Value> ret = toProtobuf->Call(val2,0,NULL);
@@ -141,8 +143,6 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 }
 
 int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
-	NanScope();
-
 	// get a reflection
 	const Reflection *r = message->GetReflection();
 	const Descriptor *d = message->GetDescriptor();
@@ -162,7 +162,7 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 	
 	// check that all required properties are present
 	for (uint32_t i = 0; i < required.size(); i++) {
-		Handle<String> key = String::New(required.at(i).c_str());
+		Handle<String> key = NanNew<String>(required.at(i).c_str());
 		if (!subj->Has(key))
 			return -1;
 	}
@@ -198,47 +198,4 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 	}
 	
 	return 0;
-}
-
-NAN_METHOD(Serialize) {
-	NanScope();
-
-	Local<Value> p_pool = args[0]->ToObject()->GetInternalField(0);
-	DescriptorPool *pool = static_cast<DescriptorPool*>(External::Unwrap(p_pool));
-
-	// get object to serialize and name of schema
-	Local<Object> subj = args[1]->ToObject();
-	String::Utf8Value schemaName(args[2]->ToString());
-	std::string schema_name = std::string(*schemaName);
-
-	// create a message based on schema
-	DynamicMessageFactory factory;
-	const Descriptor *descriptor = pool->FindMessageTypeByName(schema_name);
-	if (descriptor == NULL) {
-		NanThrowError(("Unknown schema name: " + schema_name).c_str());
-		NanReturnUndefined();
-	}
-
-	google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
-
-	if (SerializePart(message, subj) < 0) {
-		// required field not present!
-		NanReturnNull();
-	}
-
-	// make JS Buffer instead of SlowBuffer
-	int size = message->ByteSize();
-	char *buf = new char[size];
-	bool result = message->SerializeToArray(buf, size);
-
-	if (!result) {
-		return NanThrowError("Can't serialize");
-	}
-
-	Local<Object> buffer = NanNewBufferHandle(buf, size);
-
-	delete message;
-	delete[] buf;
-
-	NanReturnValue(buffer);
 }
