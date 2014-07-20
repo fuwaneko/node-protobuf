@@ -19,6 +19,10 @@ function pb_wrapper() {
 	this.pool = protobuf.init(descriptor, int64)
 }
 
+pb_wrapper.prototype.lookupMessage = function (schema) {
+    return protobuf.lookupMessage(this.pool, schema);
+};
+
 pb_wrapper.prototype.parse = function() {
 	if (arguments.length < 2)
 		throw new Error("Invalid arguments")

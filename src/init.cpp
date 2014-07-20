@@ -53,6 +53,7 @@ void init(Handle<Object> exports) {
   exports->Set(NanNew<String>("init"), NanNew<FunctionTemplate>(libraryInit)->GetFunction());
   exports->Set(NanNew<String>("parse"), NanNew<FunctionTemplate>(Parse)->GetFunction());
   exports->Set(NanNew<String>("serialize"), NanNew<FunctionTemplate>(Serialize)->GetFunction());
+  exports->Set(NanNew<String>("lookupMessage"), NanNew<FunctionTemplate>(lookupMessage)->GetFunction());
 }
 
 NODE_MODULE(protobuf, init)
