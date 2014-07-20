@@ -26,6 +26,14 @@ describe("Basic", function() {
 				pb.serialize({}, "Test")
 			})
 		})
+
+		it("Should throw an error on null required fields", function() {
+			assert.throws(function () {
+				pb.serialize({
+					name: null
+				}, "Test")
+			})
+		})
 		
 		it("Should serialize asynchronously", function(done) {
 			pb.serialize(obj, "Test", function (error, buf) {
