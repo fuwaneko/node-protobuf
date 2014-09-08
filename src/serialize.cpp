@@ -84,11 +84,10 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 				break;
 			case FieldDescriptor::CPPTYPE_ENUM:
 				// TODO: possible memory leak?
-				size_t count;
 				enumValue =
 					val->IsNumber() ?
 						field->enum_type()->FindValueByNumber(val->Int32Value()) :
-						field->enum_type()->FindValueByName(NanCString(val, &count));
+						field->enum_type()->FindValueByName(*NanAsciiString(val));
 
 				if (enumValue != NULL) {
 					if (repeated)
