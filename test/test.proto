@@ -8,6 +8,7 @@ message Test {
 		SPECIFIC = 2;
 	}
 	optional Type type = 5 [default = DEFAULT];
+	repeated int32 r = 6 [packed=true];
 }
 
 message Data {

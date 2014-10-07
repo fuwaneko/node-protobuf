@@ -128,14 +128,12 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
 	Handle<Object> ret = NanNew<Object>();
 	// get a reflection
 	const Reflection *r = message.GetReflection();
-
-    vector<FieldDescriptor const*> fields;
-    r->ListFields(message, &fields);
+	const Descriptor *d = message.GetDescriptor();
 
 	// get fields of descriptor
-	uint32_t count = fields.size();
+	uint32_t count = d->field_count();
 	for (uint32_t i = 0; i < count; i++) {
-		const FieldDescriptor *field = fields[i];
+		const FieldDescriptor *field = d->field(i);
 
 		if (field != NULL) {
 			Handle<Value> v;

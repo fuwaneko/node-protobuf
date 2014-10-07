@@ -8,6 +8,7 @@ describe("Basic", function() {
 	var obj = {
 		"name": "test",
 		"n64": 123,
+		"r": []
 	}
 
 	describe("Serialize", function() {
@@ -82,7 +83,8 @@ describe("Basic", function() {
 			var objWithNull = {
 				"name": "test",
 				"n64": 123,
-				"value": null
+				"value": null,
+				"r": []
 			}
 
 			var buffer = pb.serialize(objWithNull, "Test")
@@ -96,7 +98,8 @@ describe("Basic", function() {
 			var objWithNull = {
 				"name": "test",
 				"n64": 123,
-				"value": undefined
+				"value": undefined,
+				"r": []
 			}
 			
 			var buffer = pb.serialize(objWithNull, "Test")
@@ -113,6 +116,22 @@ describe("Basic", function() {
 			var compare = [ "Test", "Data" ]
 
 			assert.deepEqual(info, compare)
+		})
+	})
+
+	describe("Behaviour", function() {
+		it("Should return empty repeated as empty arrays", function() {
+			var obj = {
+				"name": "test",
+				"n64": 123,
+				"r": []
+			}
+
+			var buffer = pb.serialize(obj, "Test")
+			var parsed = pb.parse(buffer, "Test")
+
+			delete obj.value;
+			assert.deepEqual(obj, parsed)
 		})
 	})
 })
