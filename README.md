@@ -6,6 +6,10 @@ It's a very simple wrapper around protocol buffers library by Google.
 It uses dynamic message building and parsing based on protocol schema you can get by compiling protocol description.
 I know that wrappers do exist, but I didn't like them.
 
+## Alternatives
+
+[ProtoBuf.js](https://github.com/dcodeIO/ProtoBuf.js)
+
 ## Current status
 
 Preparing for Node.js v0.12. Current version compiles and works with v0.11.13.
