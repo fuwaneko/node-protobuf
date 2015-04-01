@@ -13,7 +13,7 @@ describe("Basic", function() {
 
 	describe("Serialize", function() {
 		it("Should serialize object according to schema", function() {
-			pb.serialize(obj, "Test")
+			pb.serialize(obj, "tk.tewi.Test")
 		})
 
 		it("Should throw an error on invalid schema", function() {
@@ -24,7 +24,7 @@ describe("Basic", function() {
 		
 		it("Should throw an error on missing required fields", function() {
 			assert.throws(function () {
-				pb.serialize({}, "Test")
+				pb.serialize({}, "tk.tewi.Test")
 			})
 		})
 
@@ -32,12 +32,12 @@ describe("Basic", function() {
 			assert.throws(function () {
 				pb.serialize({
 					name: null
-				}, "Test")
+				}, "tk.tewi.Test")
 			})
 		})
 		
 		it("Should serialize asynchronously", function(done) {
-			pb.serialize(obj, "Test", function (error, buf) {
+			pb.serialize(obj, "tk.tewi.Test", function (error, buf) {
 				if (!Buffer.isBuffer(buf)) throw new Error("Invalid result")
 				done()
 			})
@@ -46,15 +46,15 @@ describe("Basic", function() {
 
 	describe("Parse", function() {
 		it("Should parse a buffer and return exactly the same object", function() {
-			var buffer = pb.serialize(obj, "Test")
-			var parsed = pb.parse(buffer, "Test")
+			var buffer = pb.serialize(obj, "tk.tewi.Test")
+			var parsed = pb.parse(buffer, "tk.tewi.Test")
 			assert.deepEqual(obj, parsed)
 		})
 		
 		it("Should do previous step asynchronously", function(done) {
-			var buffer = pb.serialize(obj, "Test")
+			var buffer = pb.serialize(obj, "tk.tewi.Test")
 			
-			pb.parse(buffer, "Test", function (error, parsed) {
+			pb.parse(buffer, "tk.tewi.Test", function (error, parsed) {
 				assert.deepEqual(obj, parsed)
 				done()
 			})
@@ -62,19 +62,19 @@ describe("Basic", function() {
 
 		it("Should throw an error on invalid argument", function() {
 			assert.throws(function() {
-				pb.parse("Invalid", "Test")
+				pb.parse("Invalid", "tk.tewi.Test")
 			}, Error)
 		})
 
 		it("Should throw an error on invalid buffer", function() {
 			assert.throws(function() {
-				pb.parse(new Buffer("Invalid"), "Test")
+				pb.parse(new Buffer("Invalid"), "tk.tewi.Test")
 			}, Error)
 		})
 
 		it("Should throw an error on invalid schema", function() {
 			assert.throws(function() {
-				var buffer = pb.serialize(obj, "Test")
+				var buffer = pb.serialize(obj, "tk.tewi.Test")
 				pb.parse(buffer, "I don't exist")
 			}, Error)
 		})
@@ -87,8 +87,8 @@ describe("Basic", function() {
 				"r": []
 			}
 
-			var buffer = pb.serialize(objWithNull, "Test")
-			var parsed = pb.parse(buffer, "Test")
+			var buffer = pb.serialize(objWithNull, "tk.tewi.Test")
+			var parsed = pb.parse(buffer, "tk.tewi.Test")
 
 			delete objWithNull.value;
 			assert.deepEqual(objWithNull, parsed)
@@ -102,8 +102,8 @@ describe("Basic", function() {
 				"r": []
 			}
 			
-			var buffer = pb.serialize(objWithNull, "Test")
-			var parsed = pb.parse(buffer, "Test")
+			var buffer = pb.serialize(objWithNull, "tk.tewi.Test")
+			var parsed = pb.parse(buffer, "tk.tewi.Test")
 
 			delete objWithNull.value;
 			assert.deepEqual(objWithNull, parsed)
@@ -113,7 +113,7 @@ describe("Basic", function() {
 	describe("Info", function() {
 		it("Should return correct info about descriptor", function() {
 			var info = pb.info()
-			var compare = [ "Test", "Data" ]
+			var compare = [ "tk.tewi.Test", "tk.tewi.Data" ]
 
 			assert.deepEqual(info, compare)
 		})
@@ -127,8 +127,8 @@ describe("Basic", function() {
 				"r": []
 			}
 
-			var buffer = pb.serialize(obj, "Test")
-			var parsed = pb.parse(buffer, "Test")
+			var buffer = pb.serialize(obj, "tk.tewi.Test")
+			var parsed = pb.parse(buffer, "tk.tewi.Test")
 
 			delete obj.value;
 			assert.deepEqual(obj, parsed)

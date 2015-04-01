@@ -39,7 +39,7 @@ NAN_METHOD(NativeProtobuf::New) {
 		const FileDescriptor *f = pool->BuildFile(descriptors.file(i));
 		for (int i = 0; i < f->message_type_count(); i++) {
 			const Descriptor *d = f->message_type(i);
-			const std::string name = d->name();
+			const std::string name = d->full_name();
 
 			info.push_back(name);
 		}
