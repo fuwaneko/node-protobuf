@@ -1,6 +1,6 @@
 {
   "name": "node-protobuf",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A Node.js protocol buffer wrapper",
   "author": "Dmitry Gorbunov <atskiisotona@gmail.com",
   "main": "protobuf.js",
