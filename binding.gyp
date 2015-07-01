@@ -35,6 +35,7 @@
 			}],
 			["OS == 'linux'", {
 				"libraries": [
+					"-L/usr/lib/x86_64-linux-gnu", 
 					"-lprotobuf"
 				],
 				"include_dirs": [
