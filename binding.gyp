@@ -2,7 +2,10 @@
 	"targets": [{
 		"target_name": "protobuf",
 		"sources": [ "./src/init.cpp", "./src/native.cpp", "./src/parse.cpp", "./src/serialize.cpp" ],
-		"conditions": [
+		"cflags" : [ "-Ofast", "-mtune=native", "-ffast-math", "-funroll-loops", "-fomit-frame-pointer", "-std=c++11", "-pthread", "-static", "-I../../" ],
+		"cflags_cc" : [ "-Ofast", "-mtune=native", "-ffast-math", "-funroll-loops", "-fomit-frame-pointer", "-std=c++11", "-pthread", "-static", "-I../../" ],
+		"cflags_cc!": [ "-fno-rtti" ],
+				"conditions": [
 			["OS == 'win'", {
 				"libraries": [
 					"-llibprotobuf.lib"
@@ -40,8 +43,7 @@
 				],
 				"include_dirs": [
 					"<!(node -e \"require('nan')\")"
-				],
-				"cflags_cc!": [ "-fno-rtti" ]
+				]
 			}]
 		]
 	}]
