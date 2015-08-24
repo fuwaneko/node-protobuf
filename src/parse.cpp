@@ -24,15 +24,11 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 			// to retain exact value if preserve_int64 flag was passed to constructor
 			// extract int64 as two int32
 			if (preserve_int64) {
-				uint32 hi, lo;
-				hi = (uint32) ((uint64)value >> 32);
-				lo = (uint32) value;
-				Local<Array> t = NanNew<Array>(2);
-				t->Set(0, NanNew<Number>(hi));
-				t->Set(1, NanNew<Number>(lo));
-				v = t;
-			} else
+				v = NanNew<String>(std::to_string(value).c_str());
+			} else {
 				v = NanNew<Number>(value);
+			}
+
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_UINT32: {
@@ -51,15 +47,11 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 			else
 				value = r->GetUInt64(message, field);
 			if (preserve_int64) {
-				uint32 hi, lo;
-				hi = (uint32) (value >> 32);
-				lo = (uint32) (value);
-				Local<Array> t = NanNew<Array>(2);
-				t->Set(0, NanNew<Number>(hi));
-				t->Set(1, NanNew<Number>(lo));
-				v = t;
-			} else
+				v = NanNew<String>(std::to_string(value).c_str());
+			} else {
 				v = NanNew<Number>(value);
+			}
+
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_DOUBLE: {
@@ -151,7 +143,7 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
 
 			if (field->is_optional() && (v->IsNull() || !r->HasField(message, field)))
 				continue;
-			
+
 			ret->Set(NanNew<String>(field->name().c_str()), v);
 		}
 	}

@@ -33,7 +33,8 @@
 					"OTHER_CPLUSPLUSFLAGS": [
 						"-stdlib=libc++",
 						"-I/usr/local/include"
-					]
+					],
+					"GCC_ENABLE_CPP_RTTI": "YES"
 				}
 			}],
 			["OS == 'linux'", {

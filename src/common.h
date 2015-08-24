@@ -10,12 +10,12 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/service.h>
+#include <string>
 
 using namespace google::protobuf;
 using namespace v8;
 using namespace node;
 
-// disable for now
-static bool preserve_int64 = false;
+static bool preserve_int64 = true;
 
 #endif

@@ -9,7 +9,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 	if (*val != NULL) {
 		if (field->is_optional() && (val->IsNull() || val->IsUndefined()))
 			return;
-		
+
 		switch (field->cpp_type()) {
 			case FieldDescriptor::CPPTYPE_INT32: {
 				if (repeated)
@@ -26,6 +26,10 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 						uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
 						n64 = ((uint64)hi << 32) + (uint64)lo;
 						r->AddInt64(message, field, n64);
+					} else if (preserve_int64 && val->IsString()) {
+						String::Utf8Value temp(val->ToString());
+						std::string value = std::string(*temp);
+						r->AddInt64(message, field, std::stoll(value, nullptr, 10));
 					} else
 						r->AddInt64(message, field, val->NumberValue());
 				else
@@ -35,6 +39,10 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 						uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
 						n64 = ((uint64)hi << 32) + (uint64)lo;
 						r->SetInt64(message, field, n64);
+					} else if (preserve_int64 && val->IsString()) {
+						String::Utf8Value temp(val->ToString());
+						std::string value = std::string(*temp);
+						r->SetUInt64(message, field, std::stoll(value, nullptr, 10));
 					} else
 						r->SetInt64(message, field, val->NumberValue());
 				break;
@@ -52,6 +60,10 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 						uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
 						n64 = ((uint64)hi << 32) + (uint64)lo;
 						r->AddUInt64(message, field, n64);
+					} else if (preserve_int64 && val->IsString()) {
+						String::Utf8Value temp(val->ToString());
+						std::string value = std::string(*temp);
+						r->AddUInt64(message, field, std::stoull(value, nullptr, 10));
 					} else
 						r->AddUInt64(message, field, val->NumberValue());
 				else
@@ -61,8 +73,13 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 						uint32 hi = n64_array->Get(0)->Uint32Value(), lo = n64_array->Get(1)->Uint32Value();
 						n64 = ((uint64)hi << 32) + (uint64)lo;
 						r->SetUInt64(message, field, n64);
-					} else
+					} else if (preserve_int64 && val->IsString()) {
+						String::Utf8Value temp(val->ToString());
+						std::string value = std::string(*temp);
+						r->SetUInt64(message, field, std::stoull(value, nullptr, 10));
+					} else {
 						r->SetUInt64(message, field, val->NumberValue());
+					}
 				break;
 			case FieldDescriptor::CPPTYPE_DOUBLE:
 				if (repeated)
@@ -145,7 +162,7 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 	// get a reflection
 	const Reflection *r = message->GetReflection();
 	const Descriptor *d = message->GetDescriptor();
-	
+
 	// build a list of required properties
 	vector<string> required;
 	for (int i = 0; i < d->field_count(); i++) {
@@ -158,7 +175,7 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 	// get properties of passed object
 	Local<Array> properties = subj->GetPropertyNames();
 	uint32_t len = properties->Length();
-	
+
 	// check that all required properties are present
 	for (uint32_t i = 0; i < required.size(); i++) {
 		Handle<String> key = NanNew<String>(required.at(i).c_str());
@@ -195,6 +212,6 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 			SerializeField(message, r, field, val);
 		}
 	}
-	
+
 	return 0;
 }
