@@ -33,6 +33,7 @@
 				}
 			}],
 			["OS == 'linux'", {
+				"cflags_cc!": [ "-fno-rtti" ],
 				"libraries": [
 					"-lprotobuf"
 				]
