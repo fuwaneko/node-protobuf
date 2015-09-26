@@ -11,7 +11,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 				value = r->GetRepeatedInt32(message, field, index);
 			else
 				value = r->GetInt32(message, field);
-			v = NanNew<Number>(value);
+			v = Nan::New<Number>(value);
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_INT64: {
@@ -24,15 +24,11 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 			// to retain exact value if preserve_int64 flag was passed to constructor
 			// extract int64 as two int32
 			if (preserve_int64) {
-				uint32 hi, lo;
-				hi = (uint32) ((uint64)value >> 32);
-				lo = (uint32) value;
-				Local<Array> t = NanNew<Array>(2);
-				t->Set(0, NanNew<Number>(hi));
-				t->Set(1, NanNew<Number>(lo));
-				v = t;
-			} else
-				v = NanNew<Number>(value);
+				v = Nan::New<String>(std::to_string(value).c_str()).ToLocalChecked();
+			} else {
+				v = Nan::New<Number>(value);
+			}
+
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_UINT32: {
@@ -41,7 +37,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 				value = r->GetRepeatedUInt32(message, field, index);
 			else
 				value = r->GetUInt32(message, field);
-			v = NanNew<Number>(value);
+			v = Nan::New<Number>(value);
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_UINT64: {
@@ -51,15 +47,11 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 			else
 				value = r->GetUInt64(message, field);
 			if (preserve_int64) {
-				uint32 hi, lo;
-				hi = (uint32) (value >> 32);
-				lo = (uint32) (value);
-				Local<Array> t = NanNew<Array>(2);
-				t->Set(0, NanNew<Number>(hi));
-				t->Set(1, NanNew<Number>(lo));
-				v = t;
-			} else
-				v = NanNew<Number>(value);
+				v = Nan::New<String>(std::to_string(value).c_str()).ToLocalChecked();
+			} else {
+				v = Nan::New<Number>(value);
+			}
+
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_DOUBLE: {
@@ -68,7 +60,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 				value = r->GetRepeatedDouble(message, field, index);
 			else
 				value = r->GetDouble(message, field);
-			v = NanNew<Number>(value);
+			v = Nan::New<Number>(value);
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_FLOAT: {
@@ -77,7 +69,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 				value = r->GetRepeatedFloat(message, field, index);
 			else
 				value = r->GetFloat(message, field);
-			v = NanNew<Number>(value);
+			v = Nan::New<Number>(value);
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_BOOL: {
@@ -86,19 +78,19 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 				value = r->GetRepeatedBool(message, field, index);
 			else
 				value = r->GetBool(message, field);
-			v = NanNew<Boolean>(value);
+			v = Nan::New<Boolean>(value);
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_ENUM: {
 			if (index >= 0)
-				v = NanNew<String>(r->GetRepeatedEnum(message, field, index)->name().c_str());
+				v = Nan::New<String>(r->GetRepeatedEnum(message, field, index)->name().c_str()).ToLocalChecked();
 			else
-				v = NanNew<String>(r->GetEnum(message, field)->name().c_str());
+				v = Nan::New<String>(r->GetEnum(message, field)->name().c_str()).ToLocalChecked();
 			break;
 		}
 		case FieldDescriptor::CPPTYPE_MESSAGE: {
 			if (field->is_optional() && !r->HasField(message, field))
-				v = NanNull();
+				v = Nan::Null();
 			else {
 				if (index >= 0)
 					v = ParsePart(r->GetRepeatedMessage(message, field, index));
@@ -114,9 +106,9 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 			else
 				value = r->GetString(message, field);
 			if (field->type() == FieldDescriptor::TYPE_BYTES)
-				v = NanNewBufferHandle(const_cast<char *>(value.data()), value.length());
+				v = Nan::NewBuffer(const_cast<char *>(value.data()), value.length()).ToLocalChecked();
 			else
-				v = NanNew<String>(value.c_str());
+				v = Nan::New<String>(value.c_str()).ToLocalChecked();
 			break;
 		}
 	}
@@ -125,7 +117,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 }
 
 Handle<Object> ParsePart(const google::protobuf::Message &message) {
-	Handle<Object> ret = NanNew<Object>();
+	Handle<Object> ret = Nan::New<Object>();
 	// get a reflection
 	const Reflection *r = message.GetReflection();
 	const Descriptor *d = message.GetDescriptor();
@@ -140,7 +132,7 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
 
 			if (field->is_repeated()) {
 				int size = r->FieldSize(message, field);
-				Handle<Array> array = NanNew<Array>(size);
+				Handle<Array> array = Nan::New<Array>(size);
 				for (int i = 0; i < size; i++) {
 					array->Set(i, ParseField(message, r, field, i));
 				}
@@ -151,8 +143,8 @@ Handle<Object> ParsePart(const google::protobuf::Message &message) {
 
 			if (field->is_optional() && (v->IsNull() || !r->HasField(message, field)))
 				continue;
-			
-			ret->Set(NanNew<String>(field->name().c_str()), v);
+
+			ret->Set(Nan::New<String>(field->name().c_str()).ToLocalChecked(), v);
 		}
 	}
 

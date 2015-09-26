@@ -5,6 +5,8 @@
 		"include_dirs": [
 			"<!(node -e \"require('nan')\")"
 		],
+		"cflags" : [ "-Ofast", "-mtune=native", "-ffast-math", "-funroll-loops", "-fomit-frame-pointer", "-std=c++11", "-pthread", "-static", "-I../../" ],
+		"cflags_cc" : [ "-Ofast", "-mtune=native", "-ffast-math", "-funroll-loops", "-fomit-frame-pointer", "-std=c++11", "-pthread", "-static", "-I../../" ],
 		"conditions": [
 			["OS == 'win'", {
 				"libraries": [
@@ -29,12 +31,14 @@
 					"OTHER_CPLUSPLUSFLAGS": [
 						"-stdlib=libc++",
 						"-I/usr/local/include"
-					]
+					],
+					"GCC_ENABLE_CPP_RTTI": "YES"
 				}
 			}],
 			["OS == 'linux'", {
 				"cflags_cc!": [ "-fno-rtti" ],
 				"libraries": [
+					"-L/usr/local/libz", 
 					"-lprotobuf"
 				]
 			}]

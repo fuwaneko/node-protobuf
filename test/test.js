@@ -21,7 +21,7 @@ describe("Basic", function() {
 				pb.serialize(obj, "I don't exist")
 			}, Error)
 		})
-		
+
 		it("Should throw an error on missing required fields", function() {
 			assert.throws(function () {
 				pb.serialize({}, "tk.tewi.Test")
@@ -35,7 +35,7 @@ describe("Basic", function() {
 				}, "tk.tewi.Test")
 			})
 		})
-		
+
 		it("Should serialize asynchronously", function(done) {
 			pb.serialize(obj, "tk.tewi.Test", function (error, buf) {
 				if (!Buffer.isBuffer(buf)) throw new Error("Invalid result")
@@ -50,10 +50,10 @@ describe("Basic", function() {
 			var parsed = pb.parse(buffer, "tk.tewi.Test")
 			assert.deepEqual(obj, parsed)
 		})
-		
+
 		it("Should do previous step asynchronously", function(done) {
 			var buffer = pb.serialize(obj, "tk.tewi.Test")
-			
+
 			pb.parse(buffer, "tk.tewi.Test", function (error, parsed) {
 				assert.deepEqual(obj, parsed)
 				done()
@@ -101,7 +101,7 @@ describe("Basic", function() {
 				"value": undefined,
 				"r": []
 			}
-			
+
 			var buffer = pb.serialize(objWithNull, "tk.tewi.Test")
 			var parsed = pb.parse(buffer, "tk.tewi.Test")
 

@@ -1,7 +1,7 @@
 #include "common.h"
 #include "native.h"
 
-void init(Handle<Object> exports) {
+void init(Local<Object> exports) {
 	NativeProtobuf::Init(exports);
 }
 
