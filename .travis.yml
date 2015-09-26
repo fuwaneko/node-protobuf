@@ -8,6 +8,9 @@ node_js:
 compiler:
   - gcc
 
+before_install:
+  - npm install mocha
+
 install:
  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
