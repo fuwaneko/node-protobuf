@@ -1,7 +1,6 @@
 language: node_js
 
 node_js:
-  - "0.10"
   - "0.12"
   - "4.1.1"
 
@@ -9,7 +8,7 @@ compiler:
   - gcc
 
 before_install:
-  - npm install mocha
+  - npm install --dev
 
 install:
  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
