@@ -12,7 +12,7 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Current status
 
-Preparing for Node.js v0.12. Current version compiles and works with v0.11.13.
+Works with Node.js 0.12.x and 4.x (thanks to [bgdavidx](https://github.com/bgdavidx)).
 
 ## Custom buffers
 
@@ -27,7 +27,7 @@ TODO: example and test
 ## Requirements
 
 * Protocol Buffers >= 2.1.0
-* Node.js >= 0.10.0
+* Node.js >= 0.12.0
 
 ## Installation
 
