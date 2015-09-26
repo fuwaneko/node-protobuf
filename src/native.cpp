@@ -52,7 +52,7 @@ NAN_METHOD(NativeProtobuf::New) {
 
 NAN_METHOD(NativeProtobuf::Serialize) {
 
-	NativeProtobuf *self = ObjectWrap::Unwrap<NativeProtobuf>(info.This());
+	NativeProtobuf *self = Nan::ObjectWrap::Unwrap<NativeProtobuf>(info.This());
 
 	// get object to serialize and name of schema
 	Local<Object> subj = info[0]->ToObject();
@@ -87,7 +87,7 @@ NAN_METHOD(NativeProtobuf::Serialize) {
 		return;
 	}
 
-	Local<Object> buffer = Nan::NewBuffer(buf, size).ToLocalChecked();
+	Local<Object> buffer = Nan::CopyBuffer(buf, size).ToLocalChecked();
 
 	delete message;
 	delete[] buf;
@@ -97,7 +97,7 @@ NAN_METHOD(NativeProtobuf::Serialize) {
 
 NAN_METHOD(NativeProtobuf::Parse) {
 
-	NativeProtobuf *self = ObjectWrap::Unwrap<NativeProtobuf>(info.This());
+	NativeProtobuf *self = Nan::ObjectWrap::Unwrap<NativeProtobuf>(info.This());
 
 	Local<Object> buffer_obj = info[0]->ToObject();
 	char *buffer_data = Buffer::Data(buffer_obj);
@@ -112,6 +112,7 @@ NAN_METHOD(NativeProtobuf::Parse) {
 	if (descriptor == NULL) {
 		Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
 		info.GetReturnValue().Set(Nan::Null());
+		return;
 	}
 	google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
 
@@ -129,7 +130,7 @@ NAN_METHOD(NativeProtobuf::Parse) {
 
 NAN_METHOD(NativeProtobuf::Info) {
 
-	NativeProtobuf *self = ObjectWrap::Unwrap<NativeProtobuf>(info.This());
+	NativeProtobuf *self = Nan::ObjectWrap::Unwrap<NativeProtobuf>(info.This());
 	Local<Array> array= Nan::New<Array>();
 
 	for (unsigned long i = 0; i < self->info.size(); i++)

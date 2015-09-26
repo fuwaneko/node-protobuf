@@ -1,8 +1,8 @@
 #include "common.h"
 #include "parse.h"
 
-Local<Value> ParseField(const google::protobuf::Message &message, const Reflection *r, const FieldDescriptor *field, int index) {
-	Local<Value> v;
+Handle<Value> ParseField(const google::protobuf::Message &message, const Reflection *r, const FieldDescriptor *field, int index) {
+	Handle<Value> v;
 
 	switch (field->cpp_type()) {
 		case FieldDescriptor::CPPTYPE_INT32: {
@@ -116,8 +116,8 @@ Local<Value> ParseField(const google::protobuf::Message &message, const Reflecti
 	return v;
 }
 
-Local<Object> ParsePart(const google::protobuf::Message &message) {
-	Local<Object> ret = Nan::New<Object>();
+Handle<Object> ParsePart(const google::protobuf::Message &message) {
+	Handle<Object> ret = Nan::New<Object>();
 	// get a reflection
 	const Reflection *r = message.GetReflection();
 	const Descriptor *d = message.GetDescriptor();
@@ -128,11 +128,11 @@ Local<Object> ParsePart(const google::protobuf::Message &message) {
 		const FieldDescriptor *field = d->field(i);
 
 		if (field != NULL) {
-			Local<Value> v;
+			Handle<Value> v;
 
 			if (field->is_repeated()) {
 				int size = r->FieldSize(message, field);
-				Local<Array> array = Nan::New<Array>(size);
+				Handle<Array> array = Nan::New<Array>(size);
 				for (int i = 0; i < size; i++) {
 					array->Set(i, ParseField(message, r, field, i));
 				}
