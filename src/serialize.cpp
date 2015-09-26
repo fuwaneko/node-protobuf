@@ -2,7 +2,7 @@
 
 #include "serialize.h"
 
-void SerializeField(google::protobuf::Message *message, const Reflection *r, const FieldDescriptor *field, Handle<Value> val) {
+void SerializeField(google::protobuf::Message *message, const Reflection *r, const FieldDescriptor *field, Local<Value> val) {
 	const EnumValueDescriptor *enumValue = NULL;
 	bool repeated = field->is_repeated();
 
@@ -104,7 +104,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 				enumValue =
 					val->IsNumber() ?
 						field->enum_type()->FindValueByNumber(val->Int32Value()) :
-						field->enum_type()->FindValueByName(*NanAsciiString(val));
+						field->enum_type()->FindValueByName(*String::Utf8Value(val));
 
 				if (enumValue != NULL) {
 					if (repeated)
@@ -133,7 +133,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 
 				if (val->IsObject()) {
 					Local<Object> val2 = val->ToObject();
-					Local<Value> converter = val2->Get(NanNew<String>("toProtobuf"));
+					Local<Value> converter = val2->Get(Nan::New<String>("toProtobuf").ToLocalChecked());
 					if (converter->IsFunction()) {
 						Local<Function> toProtobuf = Local<Function>::Cast(converter);
 						Local<Value> ret = toProtobuf->Call(val2,0,NULL);
@@ -158,7 +158,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 	}
 }
 
-int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
+int SerializePart(google::protobuf::Message *message, Local<Object> subj) {
 	// get a reflection
 	const Reflection *r = message->GetReflection();
 	const Descriptor *d = message->GetDescriptor();
@@ -178,7 +178,7 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 
 	// check that all required properties are present
 	for (uint32_t i = 0; i < required.size(); i++) {
-		Handle<String> key = NanNew<String>(required.at(i).c_str());
+		Local<String> key = Nan::New<String>(required.at(i).c_str()).ToLocalChecked();
 		if (!subj->Has(key))
 			return -1;
 	}
@@ -202,7 +202,7 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 			if (!val->IsArray())
 				continue;
 
-			Handle<Array> array = val.As<Array>();
+			Local<Array> array = val.As<Array>();
 			int len = array->Length();
 
 			for (int i = 0; i < len; i++)
