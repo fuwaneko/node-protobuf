@@ -4,22 +4,18 @@ node_js:
   - "0.12"
   - "4.1.1"
 
-compiler:
-  - gcc
-
 before_install:
   - npm install --production
   - npm install mocha
 
-install:
- - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+env:
+ - CXX=g++-4.8
 
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - gcc-4.8
       - g++-4.8
       - libprotobuf-dev
 
