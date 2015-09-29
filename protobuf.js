@@ -12,11 +12,14 @@ function pb_wrapper() {
 		return new pb_wrapper.apply(this, arguments)
 
 	var descriptor = arguments[0] || null
-	var int64 = arguments[1] || true
+	var int64 = true
+	if (arguments[1] !== undefined && arguments[1] !== null) {
+		int64 = arguments[1]
+	}
 
 	assert(descriptor, "Descriptor must be provided")
 
-	this.native = new protobuf.native(descriptor)
+	this.native = new protobuf.native(descriptor, int64)
 }
 
 pb_wrapper.prototype.parse = function() {
@@ -37,8 +40,7 @@ pb_wrapper.prototype.parse = function() {
 			throw new Error("Unexpected error while parsing " + schema)
 		else
 			return result
-	}
-	else
+	} else
 		process.nextTick(function() {
 			try {
 				var result = native.parse(buffer, schema)
@@ -64,8 +66,7 @@ pb_wrapper.prototype.serialize = function() {
 			throw new Error("Missing required fields while serializing " + schema)
 		else
 			return result
-	}
-	else
+	} else
 		process.nextTick(function() {
 			try {
 				var result = native.serialize(object, schema)

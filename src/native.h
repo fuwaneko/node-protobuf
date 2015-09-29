@@ -6,10 +6,11 @@
 class NativeProtobuf : public Nan::ObjectWrap {
 public:
 	static void Init(Local<Object> exports);
-	NativeProtobuf(DescriptorPool *pool, std::vector<std::string> info);
+	NativeProtobuf(DescriptorPool *pool, std::vector<std::string> info, bool preserve_int64);
 
 	DescriptorPool *pool;
 	std::vector<std::string> info;
+	bool preserve_int64;
 private:
 	static NAN_METHOD(New);
 	static NAN_METHOD(Parse);

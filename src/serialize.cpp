@@ -2,7 +2,7 @@
 
 #include "serialize.h"
 
-void SerializeField(google::protobuf::Message *message, const Reflection *r, const FieldDescriptor *field, Handle<Value> val) {
+void SerializeField(google::protobuf::Message *message, const Reflection *r, const FieldDescriptor *field, Handle<Value> val, bool preserve_int64) {
 	const EnumValueDescriptor *enumValue = NULL;
 	bool repeated = field->is_repeated();
 
@@ -116,9 +116,9 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 			case FieldDescriptor::CPPTYPE_MESSAGE:
 				if (val->IsObject()) {
 					if (repeated)
-						SerializePart(r->AddMessage(message, field), val.As<Object>());
+						SerializePart(r->AddMessage(message, field), val.As<Object>(), preserve_int64);
 					else
-						SerializePart(r->MutableMessage(message, field), val.As<Object>());
+						SerializePart(r->MutableMessage(message, field), val.As<Object>(), preserve_int64);
 				}
 				break;
 			case FieldDescriptor::CPPTYPE_STRING:
@@ -158,7 +158,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 	}
 }
 
-int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
+int SerializePart(google::protobuf::Message *message, Handle<Object> subj, bool preserve_int64) {
 	// get a reflection
 	const Reflection *r = message->GetReflection();
 	const Descriptor *d = message->GetDescriptor();
@@ -206,10 +206,10 @@ int SerializePart(google::protobuf::Message *message, Handle<Object> subj) {
 			int len = array->Length();
 
 			for (int i = 0; i < len; i++)
-				SerializeField(message, r, field, array->Get(i));
+				SerializeField(message, r, field, array->Get(i), preserve_int64);
 
 		} else {
-			SerializeField(message, r, field, val);
+			SerializeField(message, r, field, val, preserve_int64);
 		}
 	}
 

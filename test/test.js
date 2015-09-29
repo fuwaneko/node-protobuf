@@ -17,19 +17,19 @@ describe("Basic", function() {
 		})
 
 		it("Should throw an error on invalid schema", function() {
-			assert.throws(function () {
+			assert.throws(function() {
 				pb.serialize(obj, "I don't exist")
 			}, Error)
 		})
 
 		it("Should throw an error on missing required fields", function() {
-			assert.throws(function () {
+			assert.throws(function() {
 				pb.serialize({}, "tk.tewi.Test")
 			})
 		})
 
 		it("Should throw an error on null required fields", function() {
-			assert.throws(function () {
+			assert.throws(function() {
 				pb.serialize({
 					name: null
 				}, "tk.tewi.Test")
@@ -37,7 +37,7 @@ describe("Basic", function() {
 		})
 
 		it("Should serialize asynchronously", function(done) {
-			pb.serialize(obj, "tk.tewi.Test", function (error, buf) {
+			pb.serialize(obj, "tk.tewi.Test", function(error, buf) {
 				if (!Buffer.isBuffer(buf)) throw new Error("Invalid result")
 				done()
 			})
@@ -54,7 +54,7 @@ describe("Basic", function() {
 		it("Should do previous step asynchronously", function(done) {
 			var buffer = pb.serialize(obj, "tk.tewi.Test")
 
-			pb.parse(buffer, "tk.tewi.Test", function (error, parsed) {
+			pb.parse(buffer, "tk.tewi.Test", function(error, parsed) {
 				assert.deepEqual(obj, parsed)
 				done()
 			})
@@ -113,7 +113,7 @@ describe("Basic", function() {
 	describe("Info", function() {
 		it("Should return correct info about descriptor", function() {
 			var info = pb.info()
-			var compare = [ "tk.tewi.Test", "tk.tewi.Data" ]
+			var compare = ["tk.tewi.Test", "tk.tewi.Data"]
 
 			assert.deepEqual(info, compare)
 		})

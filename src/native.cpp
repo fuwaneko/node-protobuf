@@ -4,7 +4,7 @@
 
 Nan::Persistent<Function> constructor;
 
-NativeProtobuf::NativeProtobuf(DescriptorPool *pool, std::vector<std::string> info): pool(pool), info(info) {}
+NativeProtobuf::NativeProtobuf(DescriptorPool *pool, std::vector<std::string> info, bool preserve_int64): pool(pool), info(info), preserve_int64(preserve_int64) {}
 
 void NativeProtobuf::Init(Local<Object> exports) {
 	// constructor
@@ -44,7 +44,11 @@ NAN_METHOD(NativeProtobuf::New) {
 		}
 	}
 
-	NativeProtobuf *proto = new NativeProtobuf(pool, infoList);
+	// int64
+	Local<Boolean> keep64 = info[1]->ToBoolean();
+	bool preserve_int64 = keep64->BooleanValue();
+
+	NativeProtobuf *proto = new NativeProtobuf(pool, infoList, preserve_int64);
 	proto->Wrap(info.This());
 
 	info.GetReturnValue().Set(info.This());
@@ -70,7 +74,7 @@ NAN_METHOD(NativeProtobuf::Serialize) {
 
 	google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
 
-	if (SerializePart(message, subj) < 0) {
+	if (SerializePart(message, subj, self->preserve_int64) < 0) {
 		// required field not present!
 		info.GetReturnValue().Set(Nan::Null());
 		return;
@@ -119,7 +123,7 @@ NAN_METHOD(NativeProtobuf::Parse) {
 	bool parseResult = message->ParseFromArray(buffer_data, buffer_length);
 
 	if (parseResult) {
-		Local<Object> ret = ParsePart(*message);
+		Local<Object> ret = ParsePart(*message, self->preserve_int64);
 		delete message;
 		info.GetReturnValue().Set(ret);
 	} else {

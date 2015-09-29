@@ -1,0 +1,7 @@
+message Point {
+    required fixed32 i  = 1;
+    required fixed32 j  = 2;
+}
+message Points {
+    repeated Point points = 1;
+}
