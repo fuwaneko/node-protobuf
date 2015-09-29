@@ -12,7 +12,7 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Current status
 
-Preparing for Node.js v0.12. Current version compiles and works with v0.11.13.
+Works with Node.js 0.12.x and 4.x (thanks to [bgdavidx](https://github.com/bgdavidx)).
 
 ## Custom buffers
 
@@ -27,7 +27,7 @@ TODO: example and test
 ## Requirements
 
 * Protocol Buffers >= 2.1.0
-* Node.js >= 0.10.0
+* Node.js >= 0.12.0
 
 ## Installation
 
@@ -144,4 +144,29 @@ While parsing you *always* get string. E.g. after parsing buffers serialized fro
 parsedObj = {
   enumValue: "first"
 }
+```
+
+## License
+```
+The MIT License (MIT)
+
+Copyright (c) 2015 Dmitry Gorbunov
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
