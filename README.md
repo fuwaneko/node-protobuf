@@ -12,7 +12,7 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Current status
 
-Works with Node.js 0.12.x and 4.x (thanks to [bgdavidx](https://github.com/bgdavidx)).
+Works with Node.js 0.10.x, 0.12.x and 4.x (thanks to [bgdavidx](https://github.com/bgdavidx)).
 
 ## Custom buffers
 
