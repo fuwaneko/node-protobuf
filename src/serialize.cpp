@@ -42,7 +42,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r, con
 					} else if (preserve_int64 && val->IsString()) {
 						String::Utf8Value temp(val->ToString());
 						std::string value = std::string(*temp);
-						r->SetUInt64(message, field, std::stoll(value, nullptr, 10));
+						r->SetInt64(message, field, std::stoll(value, nullptr, 10));
 					} else
 						r->SetInt64(message, field, val->NumberValue());
 				break;
