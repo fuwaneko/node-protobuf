@@ -78,7 +78,8 @@ NAN_METHOD(NativeProtobuf::Serialize) {
 
 	// make JS Buffer instead of SlowBuffer
 	int size = message->ByteSize();
-	char *buf = new char[size];
+	Local<Object> buffer = Nan::NewBuffer(size).ToLocalChecked();
+	char *buf = Buffer::Data(buffer);
 	bool result = message->SerializeToArray(buf, size);
 
 	if (!result) {
@@ -87,10 +88,7 @@ NAN_METHOD(NativeProtobuf::Serialize) {
 		return;
 	}
 
-	Local<Object> buffer = Nan::CopyBuffer(buf, size).ToLocalChecked();
-
 	delete message;
-	delete[] buf;
 
 	info.GetReturnValue().Set(buffer);
 }
