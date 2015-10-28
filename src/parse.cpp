@@ -138,11 +138,11 @@ Local<Object> ParsePart(const google::protobuf::Message &message, bool preserve_
 				}
 				v = array;
 			} else {
+				if (field->is_optional() && !r->HasField(message, field))
+					continue;
+
 				v = ParseField(message, r, field, -1, preserve_int64);
 			}
-
-			if (field->is_optional() && (v->IsNull() || !r->HasField(message, field)))
-				continue;
 
 			ret->Set(Nan::New<String>(field->name().c_str()).ToLocalChecked(), v);
 		}

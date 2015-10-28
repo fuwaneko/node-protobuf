@@ -3,17 +3,30 @@
 This is the main wrapper for protobuf implementation
 
 **/
+"use strict"
 
 var assert = require("assert")
 var protobuf = require("bindings")("protobuf.node")
 
 function pb_wrapper() {
-	if (!(this instanceof pb_wrapper))
-		return new pb_wrapper.apply(this, arguments)
+	if (!(this instanceof pb_wrapper)) {
+		// prevent arguments leaking
+		var args = []
+		var i = 0
+		for (i = 0; i < arguments.length; i++) {
+			args.push(arguments[i])
+		}
+		return new pb_wrapper.apply(this, args)
+	}
 
-	var descriptor = arguments[0] || null
+	var descriptor = null
 	var int64 = true
-	if (arguments[1] !== undefined && arguments[1] !== null) {
+
+	if (arguments[0] !== void 0) {
+		descriptor = arguments[0]
+	}
+
+	if (arguments[1] !== void 0) {
 		int64 = arguments[1]
 	}
 
@@ -81,7 +94,7 @@ pb_wrapper.prototype.serialize = function() {
 }
 
 pb_wrapper.prototype.info = function() {
-	return this.native.info();
+	return this.native.info()
 }
 
 // backward compatibility
