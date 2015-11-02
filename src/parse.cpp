@@ -106,7 +106,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 			else
 				value = r->GetString(message, field);
 			if (field->type() == FieldDescriptor::TYPE_BYTES)
-				v = Nan::NewBuffer(const_cast<char *>(value.data()), value.length()).ToLocalChecked();
+			    v = Nan::CopyBuffer(const_cast<char *>(value.data()), value.length()).ToLocalChecked();
 			else
 				v = Nan::New<String>(value.c_str()).ToLocalChecked();
 			break;
