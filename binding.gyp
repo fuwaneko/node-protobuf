@@ -3,17 +3,18 @@
 		"target_name": "protobuf",
 		"sources": [ "./src/init.cpp", "./src/native.cpp", "./src/parse.cpp", "./src/serialize.cpp" ],
 		"include_dirs": [
-			"<!(node -e \"require('nan')\")"
+			"<!(node -e \"require('nan')\")",
+            "$(LIBPROTOBUF)/include"
 		],
+        'libraries': [
+            "-L$(LIBPROTOBUF)/lib"
+        ],
 		"cflags" : [ "-Ofast", "-mtune=native", "-ffast-math", "-funroll-loops", "-fomit-frame-pointer", "-std=c++11", "-pthread", "-static", "-I../../" ],
 		"cflags_cc" : [ "-Ofast", "-mtune=native", "-ffast-math", "-funroll-loops", "-fomit-frame-pointer", "-std=c++11", "-pthread", "-static", "-I../../" ],
 		"conditions": [
 			["OS == 'win'", {
 				"libraries": [
 					"-llibprotobuf.lib"
-				],
-				"include_dirs": [
-					"$(LIBPROTOBUF)/include"
 				],
 				"msvs_settings": {
 					"VCLinkerTool": {
