@@ -16,8 +16,8 @@
 		'libraries': [
 			'-L<(lp)/lib'
 		],
-		'cflags' : [ '-Ofast', '-mtune=native', '-ffast-math', '-funroll-loops', '-fomit-frame-pointer', '-std=c++11', '-pthread', '-static', '-I../../' ],
-		'cflags_cc' : [ '-Ofast', '-mtune=native', '-ffast-math', '-funroll-loops', '-fomit-frame-pointer', '-std=c++11', '-pthread', '-static', '-I../../' ],
+		'cflags' : [ '-Ofast', '-ffast-math', '-funroll-loops', '-fomit-frame-pointer', '-std=c++11', '-pthread', '-static', '-I../../' ],
+		'cflags_cc' : [ '-Ofast', '-ffast-math', '-funroll-loops', '-fomit-frame-pointer', '-std=c++11', '-pthread', '-static', '-I../../' ],
 		'conditions': [
 			['OS == "win"', {
 				'libraries': [
