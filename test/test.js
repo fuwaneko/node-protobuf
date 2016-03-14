@@ -108,6 +108,19 @@ describe("Basic", function() {
 			delete objWithNull.value;
 			assert.deepEqual(objWithNull, parsed)
 		})
+
+		it("Should return repeated int32 fields as typed array", function() {
+			var obj = {
+				"name": "test",
+				"n64": 123,
+			        "r": new Int32Array([1,2,3,4])
+			}
+
+			var buffer = pb.serialize(obj, "tk.tewi.Test")
+			var parsed = pb.parse(buffer, "tk.tewi.Test")
+
+			assert.deepEqual(obj.r, parsed.r)
+		})
 	})
 
 	describe("Info", function() {

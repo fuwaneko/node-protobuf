@@ -1,8 +1,33 @@
 #include "common.h"
 #include "parse.h"
 
-Handle<Value> ParseField(const google::protobuf::Message &message, const Reflection *r, const FieldDescriptor *field, int index, bool preserve_int64) {
-	Handle<Value> v;
+bool NewTypedArray(Local<Object>& v, Isolate *isolate, const FieldDescriptor *field, int size) {
+        Local<ArrayBuffer> a;
+	switch (field->cpp_type()) {
+	case FieldDescriptor::CPPTYPE_INT32:
+	        a = ArrayBuffer::New(isolate, sizeof(int32) * size);
+		v = Int32Array::New(a, 0, size);
+		return true;
+	case FieldDescriptor::CPPTYPE_UINT32:
+	        a = ArrayBuffer::New(isolate, sizeof(uint32) * size);
+		v = Uint32Array::New(a, 0, size);
+		return true;
+	case FieldDescriptor::CPPTYPE_FLOAT:
+	        a = ArrayBuffer::New(isolate, sizeof(float) * size);
+		v = Float32Array::New(a, 0, size);
+		return true;
+	case FieldDescriptor::CPPTYPE_DOUBLE:
+	        a = ArrayBuffer::New(isolate, sizeof(double) * size);
+                v = Float64Array::New(a, 0, size);
+		return true;
+	default:
+	        break;
+	}
+	return false;
+}
+
+Local<Value> ParseField(Isolate *isolate, const google::protobuf::Message &message, const Reflection *r, const FieldDescriptor *field, int index, bool preserve_int64) {
+        Local<Value> v;
 
 	switch (field->cpp_type()) {
 		case FieldDescriptor::CPPTYPE_INT32: {
@@ -93,9 +118,9 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 				v = Nan::Null();
 			else {
 				if (index >= 0)
-					v = ParsePart(r->GetRepeatedMessage(message, field, index), preserve_int64);
+				        v = ParsePart(isolate, r->GetRepeatedMessage(message, field, index), preserve_int64);
 				else
-					v = ParsePart(r->GetMessage(message, field), preserve_int64);
+				        v = ParsePart(isolate, r->GetMessage(message, field), preserve_int64);
 			}
 			break;
 		}
@@ -116,7 +141,7 @@ Handle<Value> ParseField(const google::protobuf::Message &message, const Reflect
 	return v;
 }
 
-Local<Object> ParsePart(const google::protobuf::Message &message, bool preserve_int64) {
+Local<Object> ParsePart(Isolate *isolate, const google::protobuf::Message &message, bool preserve_int64) {
 	Local<Object> ret = Nan::New<Object>();
 	// get a reflection
 	const Reflection *r = message.GetReflection();
@@ -128,17 +153,23 @@ Local<Object> ParsePart(const google::protobuf::Message &message, bool preserve_
 		const FieldDescriptor *field = d->field(i);
 
 		if (field != NULL) {
-			Handle<Value> v;
+			Local<Value> v;
 
 			if (field->is_repeated()) {
 				int size = r->FieldSize(message, field);
-				Handle<Array> array = Nan::New<Array>(size);
-				for (int i = 0; i < size; i++) {
-					array->Set(i, ParseField(message, r, field, i, preserve_int64));
+				Local<Object> typedArray;
+                                if (NewTypedArray(typedArray, isolate, field, size)) {
+				        for (int i = 0; i < size; i++)
+					        typedArray->Set(i, ParseField(isolate, message, r, field, i, preserve_int64));
+					v = typedArray;
+				} else {
+				        Local<Array> array = Nan::New<Array>(size);
+					for (int i = 0; i < size; i++)
+					        array->Set(i, ParseField(isolate, message, r, field, i, preserve_int64));
+					v = array;
 				}
-				v = array;
 			} else {
-				v = ParseField(message, r, field, -1, preserve_int64);
+			        v = ParseField(isolate, message, r, field, -1, preserve_int64);
 			}
 
 			if (field->is_optional() && !r->HasField(message, field))
