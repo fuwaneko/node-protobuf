@@ -2,7 +2,7 @@
 #include "parse.h"
 
 bool NewTypedArray(Local<Object>& v, Isolate *isolate, const FieldDescriptor *field, int size) {
-#if NODE_MAJOR_VERSION > 0
+#if NODE_MAJOR_VERSION > 0 || NODE_MINOR_VERSION > 11
         Local<ArrayBuffer> a;
 	switch (field->cpp_type()) {
 	case FieldDescriptor::CPPTYPE_INT32:
