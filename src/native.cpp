@@ -44,9 +44,7 @@ NAN_METHOD(NativeProtobuf::New) {
 		}
 	}
 
-	// int64
-	Local<Boolean> keep64 = info[1]->ToBoolean();
-	bool preserve_int64 = keep64->BooleanValue();
+	bool preserve_int64 = info[1]->BooleanValue();
 
 	NativeProtobuf *proto = new NativeProtobuf(pool, infoList, preserve_int64);
 	proto->Wrap(info.This());
@@ -118,7 +116,14 @@ NAN_METHOD(NativeProtobuf::Parse) {
 	}
 	google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
 
-	bool parseResult = message->ParseFromArray(buffer_data, buffer_length);
+	google::protobuf::io::ArrayInputStream array_stream(buffer_data, buffer_length);
+	google::protobuf::io::CodedInputStream coded_stream(&array_stream);
+	size_t max = info[2]->Uint32Value();
+	size_t warn = info[3]->Uint32Value();
+	if (max) {
+	  coded_stream.SetTotalBytesLimit(max, warn ? warn : max);
+	}
+	bool parseResult = message->ParseFromCodedStream(&coded_stream);
 
 	if (parseResult) {
 		Local<Object> ret = ParsePart(*message, self->preserve_int64);

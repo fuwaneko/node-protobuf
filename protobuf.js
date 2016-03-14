@@ -42,13 +42,15 @@ pb_wrapper.prototype.parse = function() {
 	var buffer = arguments[0]
 	var schema = arguments[1]
 	var callback = arguments[2] || null
+	var limit = arguments[3] | 0
+	var warn = arguments[4] | 0
 	var native = this.native
 
 	if (!Buffer.isBuffer(buffer))
 		throw new Error("First argument must be a Buffer")
 
 	if (callback === null) {
-		var result = native.parse(buffer, schema)
+		var result = native.parse(buffer, schema, limit, warn)
 		if (result === null)
 			throw new Error("Unexpected error while parsing " + schema)
 		else
@@ -56,7 +58,7 @@ pb_wrapper.prototype.parse = function() {
 	} else
 		process.nextTick(function() {
 			try {
-				var result = native.parse(buffer, schema)
+			        var result = native.parse(buffer, schema, limit, warn)
 				callback(null, result)
 			} catch (e) {
 				callback(e, null)
