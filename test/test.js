@@ -109,6 +109,8 @@ describe("Basic", function() {
 			assert.deepEqual(objWithNull, parsed)
 		})
 
+		// Typed arrays are hilariously broken before 0.12
+		if (Number(process.version.match(/^v(\d+\.\d+)/)[1]) > 0.11)
 		it("Should return repeated int32 fields as typed array", function() {
 			var obj = {
 				"name": "test",
