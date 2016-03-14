@@ -160,7 +160,7 @@ Local<Object> ParsePart(Isolate *isolate, const google::protobuf::Message &messa
 			if (field->is_repeated()) {
 				int size = r->FieldSize(message, field);
 				Local<Object> typedArray;
-                                if (NewTypedArray(typedArray, isolate, field, size)) {
+                                if (size > 0 && NewTypedArray(typedArray, isolate, field, size)) {
 				        for (int i = 0; i < size; i++)
 					        typedArray->Set(i, ParseField(isolate, message, r, field, i, preserve_int64));
 					v = typedArray;
