@@ -203,8 +203,10 @@ int SerializePart(google::protobuf::Message *message, Local<Object> subj, bool p
 			Local<Object> array;
 		        if (val->IsArray()) {
 			        len = val.As<Array>()->Length();
+#if NODE_MAJOR_VERSION > 0
 			} else if (val->IsTypedArray()) {
 			        len = val.As<TypedArray>()->Length();
+#endif
 			} else {
 			        continue;
 			}
