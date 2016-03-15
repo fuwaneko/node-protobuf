@@ -102,11 +102,13 @@ Accepts optional callback parameter which is essentially a function in Node.js c
 
 ### Parse
 
-**Protobuf.parse(buffer, schema, [callback])**
+**Protobuf.parse(buffer, schema, [callback, limit, warn])**
 
 Parses Buffer (or UInt8Array for example, just anything that is binary data array) according to schema.
 
 Accepts optional callback parameter which is essentially a function in Node.js callback style, i.e. function(error, result) {}. In case of exceptions (see below) they are passed as first parameter to callback.
+
+Optional limit argument allows to set the maximum message limit. If the optional warn argument is not set, the warning threshold is set to limit/2.
 
 - Returns plain object
 - Throws if first argument isn't a Buffer
