@@ -20,6 +20,7 @@
     "mocha": "^2.3.4"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha ./test/test.js -R spec"
+    "test": "./node_modules/mocha/bin/mocha ./test/test.js -R spec",
+    "format": "for source in src/* protobuf.js; do clang-format -style=file -i $source; done"
   }
 }
