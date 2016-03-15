@@ -126,7 +126,7 @@ NAN_METHOD(NativeProtobuf::Parse) {
 	bool parseResult = message->ParseFromCodedStream(&coded_stream);
 
 	if (parseResult) {
-		Local<Object> ret = ParsePart(*message, self->preserve_int64);
+	        Local<Object> ret = ParsePart(Isolate::GetCurrent(), *message, self->preserve_int64);
 		delete message;
 		info.GetReturnValue().Set(ret);
 	} else {

@@ -108,6 +108,21 @@ describe("Basic", function() {
 			delete objWithNull.value;
 			assert.deepEqual(objWithNull, parsed)
 		})
+
+		// Typed arrays are hilariously broken before 0.12
+		if (Number(process.version.match(/^v(\d+\.\d+)/)[1]) > 0.11)
+		it("Should return repeated int32 fields as typed array", function() {
+			var obj = {
+				"name": "test",
+				"n64": 123,
+			        "r": new Int32Array([1,2,3,4])
+			}
+
+			var buffer = pb.serialize(obj, "tk.tewi.Test")
+			var parsed = pb.parse(buffer, "tk.tewi.Test")
+
+			assert.deepEqual(obj.r, parsed.r)
+		})
 	})
 
 	describe("Info", function() {
