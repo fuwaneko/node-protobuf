@@ -56,7 +56,7 @@ Looks like it's as simple as ``` brew install protobuf ``` before installing npm
 
 You are *not* required to generate any JS code from your protocol buffer description. Everything happens dynamically.
 
-```
+```JavaScript
 var fs = require("fs")
 var p = require("node-protobuf") // note there is no .Protobuf part anymore
 // WARNING: next call will throw if desc file is invalid
