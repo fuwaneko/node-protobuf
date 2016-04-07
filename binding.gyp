@@ -1,6 +1,9 @@
 {
 	'variables': {
 		'conditions': [
+			['OS == "win"', {
+				'lp%': '<!(echo %LIBPROTOBUF%)'
+			}],
 			['OS != "win"', {
 				'lp%': '<!(sh lp.sh)'
 			}]
@@ -25,7 +28,7 @@
 				],
 				'msvs_settings': {
 					'VCLinkerTool': {
-						'AdditionalLibraryDirectories': '<(LIBPROTOBUF)/lib'
+						'AdditionalLibraryDirectories': '<(lp)/lib'
 					}
 				}
 			}],
