@@ -152,6 +152,100 @@ Local<Value> ParseField(Isolate *isolate,
   return v;
 }
 
+Local<Object> ParseUnknownFieldset(const google::protobuf::UnknownFieldSet &fs) {
+  Local<Array> ret = Nan::New<Array>();
+
+  const int field_count = fs.field_count();
+
+  for (int i = 0; i < field_count; i++) {
+    Local<Object> obj = Nan::New<Object>();
+    const google::protobuf::UnknownField uf = fs.field(i);
+
+    const google::protobuf::UnknownField::Type type = uf.type();
+    const int tag = uf.number();
+
+    obj->Set(Nan::New<String>("number").ToLocalChecked(), Nan::New<Number>(tag));
+
+    Local<String> type_key = Nan::New<String>("type").ToLocalChecked();
+
+    switch (type) {
+      case google::protobuf::UnknownField::TYPE_VARINT:
+        obj->Set(type_key, Nan::New<String>("TYPE_VARINT").ToLocalChecked());
+        break;
+      case google::protobuf::UnknownField::TYPE_FIXED32:
+        obj->Set(type_key, Nan::New<String>("TYPE_FIXED32").ToLocalChecked());
+        break;
+      case google::protobuf::UnknownField::TYPE_FIXED64:
+        obj->Set(type_key, Nan::New<String>("TYPE_FIXED64").ToLocalChecked());
+        break;
+      case google::protobuf::UnknownField::TYPE_LENGTH_DELIMITED:
+        obj->Set(type_key, Nan::New<String>("TYPE_LENGTH_DELIMITED").ToLocalChecked());
+        break;
+      case google::protobuf::UnknownField::TYPE_GROUP:
+        obj->Set(type_key, Nan::New<String>("TYPE_GROUP").ToLocalChecked());
+        break;
+      default:
+        obj->Set(type_key, Nan::New<String>("UNKNOWN").ToLocalChecked());
+    }
+
+    ret->Set(i, obj);
+  }
+
+  return ret;
+
+}
+
+Local<Object> ParsePartWithUnknown(Isolate *isolate,
+                                   const google::protobuf::Message &message,
+                                   bool preserve_int64) {
+  // sad
+  Local<Object> ret = Nan::New<Object>();
+
+  const Reflection *r = message.GetReflection();
+  const Descriptor *d = message.GetDescriptor();
+
+  // get fields of descriptor
+  uint32_t count = d->field_count();
+  for (uint32_t i = 0; i < count; i++) {
+    const FieldDescriptor *field = d->field(i);
+
+    if (field != NULL) {
+      Local<Value> v;
+
+      if (field->is_repeated()) {
+        int size = r->FieldSize(message, field);
+        Local<Object> typedArray;
+        if (size > 0 && NewTypedArray(typedArray, isolate, field, size)) {
+          for (int i = 0; i < size; i++)
+            typedArray->Set(
+                i, ParseField(isolate, message, r, field, i, preserve_int64));
+          v = typedArray;
+        } else {
+          Local<Array> array = Nan::New<Array>(size);
+          for (int i = 0; i < size; i++)
+            array->Set(
+                i, ParseField(isolate, message, r, field, i, preserve_int64));
+          v = array;
+        }
+      } else {
+        v = ParseField(isolate, message, r, field, -1, preserve_int64);
+      }
+
+      if (field->is_optional() && !r->HasField(message, field))
+        continue;
+
+      ret->Set(Nan::New<String>(field->name().c_str()).ToLocalChecked(), v);
+    }
+  }
+
+  const google::protobuf::UnknownFieldSet & unknownFields = r->GetUnknownFields(message);
+  ret->Set(Nan::New<String>("$unknownFields").ToLocalChecked(),
+    ParseUnknownFieldset(unknownFields));
+
+  return ret;
+
+}
+
 Local<Object> ParsePart(Isolate *isolate,
                         const google::protobuf::Message &message,
                         bool preserve_int64) {

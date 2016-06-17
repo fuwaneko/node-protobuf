@@ -66,6 +66,37 @@ pb_wrapper.prototype.parse = function() {
     })
 };
 
+pb_wrapper.prototype.parseWithUnknown = function() {
+  if (arguments.length < 2)
+    throw new Error("Invalid arguments");
+
+  var buffer = arguments[0];
+  var schema = arguments[1];
+  var callback = arguments[2] || null;
+  var limit = arguments[3] | 0;
+  var warn = arguments[4] | 0;
+  var native = this.native;
+
+  if (!Buffer.isBuffer(buffer))
+    throw new Error("First argument must be a Buffer");
+
+  if (callback === null) {
+    var result = native.parseWithUnknown(buffer, schema, limit, warn);
+    if (result === null)
+      throw new Error("Unexpected error while parsing " + schema);
+    else
+      return result;
+  } else
+    process.nextTick(function() {
+      try {
+        var result = native.parseWithUnknown(buffer, schema, limit, warn);
+        callback(null, result);
+      } catch (e) {
+        callback(e, null);
+      }
+    })
+};
+
 pb_wrapper.prototype.serialize = function() {
   if (arguments.length < 2)
     throw new Error("Invalid arguments");

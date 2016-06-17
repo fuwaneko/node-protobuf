@@ -18,6 +18,7 @@ void NativeProtobuf::Init(Local<Object> exports) {
 
   // prototype
   Nan::SetPrototypeMethod(tpl, "parse", NativeProtobuf::Parse);
+  Nan::SetPrototypeMethod(tpl, "parseWithUnknown", NativeProtobuf::ParseWithUnknown);
   Nan::SetPrototypeMethod(tpl, "serialize", NativeProtobuf::Serialize);
   Nan::SetPrototypeMethod(tpl, "info", NativeProtobuf::Info);
 
@@ -132,6 +133,48 @@ NAN_METHOD(NativeProtobuf::Parse) {
   if (parseResult) {
     Local<Object> ret =
         ParsePart(Isolate::GetCurrent(), *message, self->preserve_int64);
+    delete message;
+    info.GetReturnValue().Set(ret);
+  } else {
+    Nan::ThrowError("Malformed protocol buffer");
+    info.GetReturnValue().Set(Nan::Null());
+  }
+}
+
+NAN_METHOD(NativeProtobuf::ParseWithUnknown) {
+
+  NativeProtobuf *self = Nan::ObjectWrap::Unwrap<NativeProtobuf>(info.This());
+
+  Local<Object> buffer_obj = info[0]->ToObject();
+  char *buffer_data = Buffer::Data(buffer_obj);
+  size_t buffer_length = Buffer::Length(buffer_obj);
+
+  String::Utf8Value schemaName(info[1]->ToString());
+  std::string schema_name = std::string(*schemaName);
+
+  // create a message based on schema
+  DynamicMessageFactory factory;
+  const Descriptor *descriptor = self->pool->FindMessageTypeByName(schema_name);
+  if (descriptor == NULL) {
+    Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
+    info.GetReturnValue().Set(Nan::Null());
+    return;
+  }
+  google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
+
+  google::protobuf::io::ArrayInputStream array_stream(buffer_data,
+                                                      buffer_length);
+  google::protobuf::io::CodedInputStream coded_stream(&array_stream);
+  size_t max = info[2]->Uint32Value();
+  size_t warn = info[3]->Uint32Value();
+  if (max) {
+    coded_stream.SetTotalBytesLimit(max, warn ? warn : max);
+  }
+  bool parseResult = message->ParseFromCodedStream(&coded_stream);
+
+  if (parseResult) {
+    Local<Object> ret =
+        ParsePartWithUnknown(Isolate::GetCurrent(), *message, self->preserve_int64);
     delete message;
     info.GetReturnValue().Set(ret);
   } else {
