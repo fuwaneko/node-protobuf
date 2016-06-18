@@ -18,7 +18,8 @@ void NativeProtobuf::Init(Local<Object> exports) {
 
   // prototype
   Nan::SetPrototypeMethod(tpl, "parse", NativeProtobuf::Parse);
-  Nan::SetPrototypeMethod(tpl, "parseWithUnknown", NativeProtobuf::ParseWithUnknown);
+  Nan::SetPrototypeMethod(tpl, "parseWithUnknown",
+                          NativeProtobuf::ParseWithUnknown);
   Nan::SetPrototypeMethod(tpl, "serialize", NativeProtobuf::Serialize);
   Nan::SetPrototypeMethod(tpl, "info", NativeProtobuf::Info);
 
@@ -173,8 +174,8 @@ NAN_METHOD(NativeProtobuf::ParseWithUnknown) {
   bool parseResult = message->ParseFromCodedStream(&coded_stream);
 
   if (parseResult) {
-    Local<Object> ret =
-        ParsePartWithUnknown(Isolate::GetCurrent(), *message, self->preserve_int64);
+    Local<Object> ret = ParsePartWithUnknown(Isolate::GetCurrent(), *message,
+                                             self->preserve_int64);
     delete message;
     info.GetReturnValue().Set(ret);
   } else {

@@ -1,5 +1,5 @@
-#include "common.h"
 #include "parse.h"
+#include "common.h"
 
 bool NewTypedArray(Local<Object> &v, Isolate *isolate,
                    const FieldDescriptor *field, int size) {
@@ -152,7 +152,8 @@ Local<Value> ParseField(Isolate *isolate,
   return v;
 }
 
-Local<Object> ParseUnknownFieldset(const google::protobuf::UnknownFieldSet &fs) {
+Local<Object>
+ParseUnknownFieldset(const google::protobuf::UnknownFieldSet &fs) {
   Local<Array> ret = Nan::New<Array>();
 
   const int field_count = fs.field_count();
@@ -164,35 +165,36 @@ Local<Object> ParseUnknownFieldset(const google::protobuf::UnknownFieldSet &fs) 
     const google::protobuf::UnknownField::Type type = uf.type();
     const int tag = uf.number();
 
-    obj->Set(Nan::New<String>("number").ToLocalChecked(), Nan::New<Number>(tag));
+    obj->Set(Nan::New<String>("number").ToLocalChecked(),
+             Nan::New<Number>(tag));
 
     Local<String> type_key = Nan::New<String>("type").ToLocalChecked();
 
     switch (type) {
-      case google::protobuf::UnknownField::TYPE_VARINT:
-        obj->Set(type_key, Nan::New<String>("TYPE_VARINT").ToLocalChecked());
-        break;
-      case google::protobuf::UnknownField::TYPE_FIXED32:
-        obj->Set(type_key, Nan::New<String>("TYPE_FIXED32").ToLocalChecked());
-        break;
-      case google::protobuf::UnknownField::TYPE_FIXED64:
-        obj->Set(type_key, Nan::New<String>("TYPE_FIXED64").ToLocalChecked());
-        break;
-      case google::protobuf::UnknownField::TYPE_LENGTH_DELIMITED:
-        obj->Set(type_key, Nan::New<String>("TYPE_LENGTH_DELIMITED").ToLocalChecked());
-        break;
-      case google::protobuf::UnknownField::TYPE_GROUP:
-        obj->Set(type_key, Nan::New<String>("TYPE_GROUP").ToLocalChecked());
-        break;
-      default:
-        obj->Set(type_key, Nan::New<String>("UNKNOWN").ToLocalChecked());
+    case google::protobuf::UnknownField::TYPE_VARINT:
+      obj->Set(type_key, Nan::New<String>("TYPE_VARINT").ToLocalChecked());
+      break;
+    case google::protobuf::UnknownField::TYPE_FIXED32:
+      obj->Set(type_key, Nan::New<String>("TYPE_FIXED32").ToLocalChecked());
+      break;
+    case google::protobuf::UnknownField::TYPE_FIXED64:
+      obj->Set(type_key, Nan::New<String>("TYPE_FIXED64").ToLocalChecked());
+      break;
+    case google::protobuf::UnknownField::TYPE_LENGTH_DELIMITED:
+      obj->Set(type_key,
+               Nan::New<String>("TYPE_LENGTH_DELIMITED").ToLocalChecked());
+      break;
+    case google::protobuf::UnknownField::TYPE_GROUP:
+      obj->Set(type_key, Nan::New<String>("TYPE_GROUP").ToLocalChecked());
+      break;
+    default:
+      obj->Set(type_key, Nan::New<String>("UNKNOWN").ToLocalChecked());
     }
 
     ret->Set(i, obj);
   }
 
   return ret;
-
 }
 
 Local<Object> ParsePartWithUnknown(Isolate *isolate,
@@ -238,12 +240,12 @@ Local<Object> ParsePartWithUnknown(Isolate *isolate,
     }
   }
 
-  const google::protobuf::UnknownFieldSet & unknownFields = r->GetUnknownFields(message);
+  const google::protobuf::UnknownFieldSet &unknownFields =
+      r->GetUnknownFields(message);
   ret->Set(Nan::New<String>("$unknownFields").ToLocalChecked(),
-    ParseUnknownFieldset(unknownFields));
+           ParseUnknownFieldset(unknownFields));
 
   return ret;
-
 }
 
 Local<Object> ParsePart(Isolate *isolate,

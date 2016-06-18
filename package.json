@@ -8,16 +8,16 @@
   "repository": "https://github.com/fuwaneko/node-protobuf",
   "dependencies": {
     "bindings": "^1.2.1",
-    "nan": "^2.1.0"
+    "nan": "^2.3.5"
   },
   "engines": [
     "node >= 0.10.0"
   ],
   "licence": "MIT",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-release": "^0.13.0",
-    "mocha": "^2.3.4"
+    "grunt": "^1.0.0",
+    "grunt-release": "^0.14.1-0",
+    "mocha": "^2.5.3"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha ./test/test.js -R spec",
