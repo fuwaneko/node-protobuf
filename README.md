@@ -35,7 +35,7 @@ TODO: example and test
 
 ### Linux
 
-Make sure you have node, node-gyp, compiler and libprotobuf binary and development files. Then install: ``` npm install node-protobuf ```
+Make sure you have node, node-gyp, pkg-config, a compiler and libprotobuf binary and development files. Then install: ``` npm install node-protobuf ```
 Simple, huh?
 
 ### Windows
