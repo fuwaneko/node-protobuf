@@ -8,19 +8,15 @@ It's a very simple wrapper around protocol buffers library by Google.
 It uses dynamic message building and parsing based on protocol schema you can get by compiling protocol description.
 I know that wrappers do exist, but I didn't like them.
 
-## Alternatives
-
-[ProtoBuf.js](https://github.com/dcodeIO/ProtoBuf.js)
-
 ## Current status
 
-Works with Node.js 0.10.x, 0.12.x and 4.x (thanks to [bgdavidx](https://github.com/bgdavidx)).
+Supports Node.js 0.10+ (thanks to [bgdavidx](https://github.com/bgdavidx)).
+For browser support see alternative pure JS implementation: [ProtoBuf.js](https://github.com/dcodeIO/ProtoBuf.js).
 
 ## Custom buffers
 
 Any string/byte field you pass to Serialize can have optional toProtobuf method which must return Buffer.
 Thanks to [cleverca22](https://github.com/cleverca22) for this nice suggestion and pull.
-TODO: example and test
 
 ## Roadmap
 
@@ -29,16 +25,19 @@ TODO: example and test
 ## Requirements
 
 * Protocol Buffers >= 2.1.0
-* Node.js >= 0.12.0
+* Node.js >= 0.10.0
+
+Please, note that Node.js versions before 4.x are not officially supported and may break eventually. It is highly recommended to update your project to at least LTS version (currently — 4.4.5).
 
 ## Installation
 
 ### Linux
 
-Make sure you have node, node-gyp, compiler and libprotobuf binary and development files. Then install: ``` npm install node-protobuf ```
-Simple, huh?
+Make sure you have node, node-gyp, compiler and libprotobuf binary and development files. Either provide LIBPROTOBUF environment variable: ```LIBPROTOBUF=/usr/local/lib/protobuf npm install node-protobuf```. Or install pkg-config for autodiscovery and then simply install like this: ``` npm install node-protobuf ```.
 
 ### Windows
+
+*Note: first paragraph might be outdated, you should always use Visual C++ version compatible with your Node.js installation.*
 
 First you have to obtain Microsoft Visual C++ 2010. Express is fine, but if you install SP1 then you'll need to reinstall x64 compilers from [here](http://www.microsoft.com/en-us/download/details.aspx?id=4422). Node.js distribution for Windows already includes node-gyp tool, so you don't need to worry about it. VC++ 2012/2013 should work as long as you have compiler version compatible with your Node.js installation (i.e. 64 for 64 and 32 for 32). For any problems compiling native modules on Windows consult [node-gyp](https://github.com/TooTallNate/node-gyp) repository.
 
@@ -52,7 +51,7 @@ Now just ``` npm install node-protobuf ``` and it should be fine.
 
 ### Mac OS X
 
-Looks like it's as simple as ``` brew install protobuf ``` before installing npm.
+Looks like it's as simple as ``` brew install protobuf ``` before installing npm package.
 
 ## Usage
 
@@ -116,6 +115,10 @@ Optional limit argument allows to set the maximum message limit. If the optional
 - Throws if first argument isn't a Buffer
 - Throws if Buffer is malformed (i.e. not a Protobuf)
 
+**Protobuf.parseWithUnknown(buffer, schema, [callback, limit, warn])**
+
+Same as **parse(...)**, but parses unknown fields and writes them to $unknownFields key in result object. Pull request by [Stephen Parente](https://github.com/webmakersteve).
+
 ### Info
 
 **Protobuf.info()**
@@ -154,7 +157,7 @@ parsedObj = {
 ```
 The MIT License (MIT)
 
-Copyright (c) 2015 Dmitry Gorbunov
+Copyright (c) 2015-2016 Dmitry Gorbunov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
