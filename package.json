@@ -16,7 +16,7 @@
   "licence": "MIT",
   "devDependencies": {
     "grunt": "^1.0.0",
-    "grunt-release": "^0.14.1-0",
+    "grunt-release": "^0.14.0",
     "mocha": "^2.5.3"
   },
   "scripts": {

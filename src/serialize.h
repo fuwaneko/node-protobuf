@@ -1,6 +1,8 @@
 #ifndef SERIALIZE_H
 #define SERIALIZE_H
 
+#include "common.h"
+
 void SerializeField(google::protobuf::Message *message, const Reflection *r,
                     const FieldDescriptor *field, Local<Value> val,
                     bool preserve_int64);
