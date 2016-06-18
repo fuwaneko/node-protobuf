@@ -16,6 +16,7 @@ public:
 private:
   static NAN_METHOD(New);
   static NAN_METHOD(Parse);
+  static NAN_METHOD(ParseWithUnknown);
   static NAN_METHOD(Serialize);
   static NAN_METHOD(Info);
 };

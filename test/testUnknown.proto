@@ -1,0 +1,21 @@
+package tk.tewi;
+
+	message Test {
+		required int64 n64 = 1;
+		required string name = 2;
+		optional string value = 3;
+		optional Data data = 4;
+		enum Type {
+			DEFAULT = 1;
+			SPECIFIC = 2;
+		}
+		optional Type type = 5 [default = DEFAULT];
+		repeated int32 r = 6 [packed=true];
+    optional string iDontBelong = 7;
+	}
+
+	message Data {
+		required string sender = 1;
+		required string recipient = 2;
+		required string message = 3;
+	}
