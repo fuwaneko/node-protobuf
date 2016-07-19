@@ -14,6 +14,7 @@ public:
   bool preserve_int64;
 
 private:
+  static DynamicMessageFactory factory;
   static NAN_METHOD(New);
   static NAN_METHOD(Parse);
   static NAN_METHOD(ParseWithUnknown);

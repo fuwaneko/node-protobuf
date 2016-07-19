@@ -3,6 +3,7 @@
 #include "serialize.h"
 
 Nan::Persistent<Function> constructor;
+DynamicMessageFactory NativeProtobuf::factory;
 
 NativeProtobuf::NativeProtobuf(DescriptorPool *pool,
                                std::vector<std::string> info,
@@ -10,6 +11,7 @@ NativeProtobuf::NativeProtobuf(DescriptorPool *pool,
     : pool(pool), info(info), preserve_int64(preserve_int64) {}
 
 void NativeProtobuf::Init(Local<Object> exports) {
+
   // constructor
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
 
@@ -67,7 +69,6 @@ NAN_METHOD(NativeProtobuf::Serialize) {
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
-  DynamicMessageFactory factory;
   const Descriptor *descriptor = self->pool->FindMessageTypeByName(schema_name);
   if (descriptor == NULL) {
     Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
@@ -112,7 +113,6 @@ NAN_METHOD(NativeProtobuf::Parse) {
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
-  DynamicMessageFactory factory;
   const Descriptor *descriptor = self->pool->FindMessageTypeByName(schema_name);
   if (descriptor == NULL) {
     Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
@@ -154,7 +154,6 @@ NAN_METHOD(NativeProtobuf::ParseWithUnknown) {
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
-  DynamicMessageFactory factory;
   const Descriptor *descriptor = self->pool->FindMessageTypeByName(schema_name);
   if (descriptor == NULL) {
     Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
