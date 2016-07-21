@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.3.1
+
+* Performance improvements thanks to [Dave Reed](https://github.com/InfinitiesLoop) and [Stephen Parente](https://github.com/webmakersteve).
+
 ### 1.2.0
 
 + Works with Node.js v0.11.3
