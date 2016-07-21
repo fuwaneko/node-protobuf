@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+message PerfTest {
+    optional uint64 uint64Field = 1;
+    optional uint32 uint32Field = 2;
+    optional string stringField = 3;
+    optional float floatField = 4;
+    optional SomeEnum enumField = 5;
+    optional Data messageField = 6;
+    optional bool boolField = 7;
+
+    enum SomeEnum {
+        FIRST = 0;
+        SECOND = 1;
+        THIRD = 2;
+    }
+}
+
+message Data {
+    required string field1 = 1;
+    required string field2 = 2;
+    required string field3 = 3;
+}

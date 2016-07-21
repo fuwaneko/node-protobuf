@@ -1,5 +1,5 @@
 var fs = require("fs");
-var p = require("../protobuf");
+var p = require("../../protobuf");
 var pjs = require("protobufjs")
 var desc = fs.readFileSync(__dirname + "/points.desc");
 var pbjsBuilder = pjs.loadProtoFile(__dirname + "/points.proto")
