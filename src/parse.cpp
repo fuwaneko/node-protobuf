@@ -212,6 +212,10 @@ Local<Object> ParsePartWithUnknown(Isolate *isolate,
     const FieldDescriptor *field = d->field(i);
 
     if (field != NULL) {
+
+      if (field->is_optional() && !r->HasField(message, field))
+        continue;
+
       Local<Value> v;
 
       if (field->is_repeated()) {
@@ -232,9 +236,6 @@ Local<Object> ParsePartWithUnknown(Isolate *isolate,
       } else {
         v = ParseField(isolate, message, r, field, -1, preserve_int64);
       }
-
-      if (field->is_optional() && !r->HasField(message, field))
-        continue;
 
       ret->Set(Nan::New<String>(field->name().c_str()).ToLocalChecked(), v);
     }
@@ -262,6 +263,10 @@ Local<Object> ParsePart(Isolate *isolate,
     const FieldDescriptor *field = d->field(i);
 
     if (field != NULL) {
+
+      if (field->is_optional() && !r->HasField(message, field))
+        continue;
+
       Local<Value> v;
 
       if (field->is_repeated()) {
@@ -282,9 +287,6 @@ Local<Object> ParsePart(Isolate *isolate,
       } else {
         v = ParseField(isolate, message, r, field, -1, preserve_int64);
       }
-
-      if (field->is_optional() && !r->HasField(message, field))
-        continue;
 
       ret->Set(Nan::New<String>(field->name().c_str()).ToLocalChecked(), v);
     }
