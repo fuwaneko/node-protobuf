@@ -175,42 +175,27 @@ int SerializePart(google::protobuf::Message *message, Local<Object> subj,
   const Reflection *r = message->GetReflection();
   const Descriptor *d = message->GetDescriptor();
 
-  // build a list of required properties
-  vector<string> required;
   for (int i = 0; i < d->field_count(); i++) {
     const FieldDescriptor *field = d->field(i);
-    if (field->is_required())
-      required.push_back(field->name());
-  }
 
-  // build a reflection
-  // get properties of passed object
-  Local<Array> properties = subj->GetPropertyNames();
-  uint32_t len = properties->Length();
+    Local<String> fieldKey =
+        Nan::New<String>(field->name().c_str()).ToLocalChecked();
 
-  // check that all required properties are present
-  for (uint32_t i = 0; i < required.size(); i++) {
-    Local<String> key =
-        Nan::New<String>(required.at(i).c_str()).ToLocalChecked();
-    if (!subj->Has(key))
+    Nan::MaybeLocal<Value> maybeVal = Nan::Get(subj, fieldKey);
+
+    if (maybeVal.IsEmpty() && field->is_required()) {
       return -1;
-  }
+    }
 
-  for (uint32_t i = 0; i < len; i++) {
-    Local<Value> property = properties->Get(i);
-    Local<String> property_s = property->ToString();
+    Local<Value> val = maybeVal.ToLocalChecked();
 
-    if (*property_s == NULL)
-      continue;
-
-    String::Utf8Value temp(property);
-    std::string propertyName = std::string(*temp);
-
-    const FieldDescriptor *field = d->FindFieldByName(propertyName);
-    if (field == NULL)
-      continue;
-
-    Local<Value> val = subj->Get(property);
+    if (val->IsUndefined() || val->IsNull()) {
+      if (field->is_required()) {
+        return -1;
+      } else {
+        continue;
+      }
+    }
 
     if (field->is_repeated()) {
       uint32_t len;
@@ -230,6 +215,7 @@ int SerializePart(google::protobuf::Message *message, Local<Object> subj,
     } else {
       SerializeField(message, r, field, val, preserve_int64);
     }
+
   }
 
   return 0;
