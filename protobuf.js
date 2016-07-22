@@ -35,21 +35,18 @@ function pb_wrapper() {
   this.native = new protobuf.native(descriptor, int64);
 }
 
-pb_wrapper.prototype.parse = function() {
-  if (arguments.length < 2)
+pb_wrapper.prototype.parse = function(buffer, schema, callback, limit, warn) {
+  if (!buffer || !schema)
     throw new Error("Invalid arguments");
-
-  var buffer = arguments[0];
-  var schema = arguments[1];
-  var callback = arguments[2] || null;
-  var limit = arguments[3] | 0;
-  var warn = arguments[4] | 0;
-  var native = this.native;
 
   if (!Buffer.isBuffer(buffer))
     throw new Error("First argument must be a Buffer");
 
-  if (callback === null) {
+  limit = limit | 0;
+  warn = warn | 0;
+  var native = this.native;
+
+  if (!callback) {
     var result = native.parse(buffer, schema, limit, warn);
     if (result === null)
       throw new Error("Unexpected error while parsing " + schema);
@@ -66,21 +63,18 @@ pb_wrapper.prototype.parse = function() {
     })
 };
 
-pb_wrapper.prototype.parseWithUnknown = function() {
-  if (arguments.length < 2)
+pb_wrapper.prototype.parseWithUnknown = function(buffer, schema, callback, limit, warn) {
+  if (!buffer || !schema)
     throw new Error("Invalid arguments");
-
-  var buffer = arguments[0];
-  var schema = arguments[1];
-  var callback = arguments[2] || null;
-  var limit = arguments[3] | 0;
-  var warn = arguments[4] | 0;
-  var native = this.native;
 
   if (!Buffer.isBuffer(buffer))
     throw new Error("First argument must be a Buffer");
 
-  if (callback === null) {
+  limit = limit | 0;
+  warn = warn | 0;
+  var native = this.native;
+
+  if (!callback) {
     var result = native.parseWithUnknown(buffer, schema, limit, warn);
     if (result === null)
       throw new Error("Unexpected error while parsing " + schema);
@@ -97,16 +91,13 @@ pb_wrapper.prototype.parseWithUnknown = function() {
     })
 };
 
-pb_wrapper.prototype.serialize = function() {
-  if (arguments.length < 2)
+pb_wrapper.prototype.serialize = function(object, schema, callback) {
+  if (!object || !schema)
     throw new Error("Invalid arguments");
 
-  var object = arguments[0];
-  var schema = arguments[1];
-  var callback = arguments[2] || null;
   var native = this.native;
 
-  if (callback === null) {
+  if (!callback) {
     var result = native.serialize(object, schema);
     if (result === null)
       throw new Error("Missing required fields while serializing " + schema);
