@@ -111,7 +111,7 @@ describe("Basic", function() {
 		})
 
 		// Typed arrays are hilariously broken before 0.12
-		if (Number(process.version.match(/^v(\d+\.\d+)/)[1]) > 0.11)
+		if (Number(process.version.match(/^v(\d+\.\d+)/)[1]) > 0.11) {
 		it("Should return repeated int32 fields as typed array", function() {
 			var obj = {
 				"name": "test",
@@ -122,8 +122,25 @@ describe("Basic", function() {
 			var buffer = pb.serialize(obj, "tk.tewi.Test")
 			var parsed = pb.parse(buffer, "tk.tewi.Test")
 
+			assert.ok(parsed.r instanceof Int32Array)
 			assert.deepEqual(obj.r, parsed.r)
 		})
+
+		it("Should return repeated int32 fields as non-typed array", function() {
+			var obj = {
+				"name": "test",
+				"n64": 123,
+			        "r": new Int32Array([1,2,3,4])
+			}
+
+			var buffer = pb.serialize(obj, "tk.tewi.Test")
+			var parsed = pb.parse(buffer, "tk.tewi.Test", null, null, null, false);
+
+			assert.deepEqual(obj.r, parsed.r)
+			assert.notEqual(parsed.r instanceof Int32Array, true,
+				'Should not be an Int32Array');
+		})
+		}
 	})
 
 	describe("Parse With Unknown", function() {
@@ -220,7 +237,7 @@ describe("Basic", function() {
 		})
 
 		// Typed arrays are hilariously broken before 0.12
-		if (Number(process.version.match(/^v(\d+\.\d+)/)[1]) > 0.11)
+		if (Number(process.version.match(/^v(\d+\.\d+)/)[1]) > 0.11) {
 		it("Should return repeated int32 fields as typed array", function() {
 			var obj = {
 				"name": "test",
@@ -232,7 +249,24 @@ describe("Basic", function() {
 			var parsed = pb.parseWithUnknown(buffer, "tk.tewi.Test")
 
 			assert.deepEqual(obj.r, parsed.r)
+			assert.ok(parsed.r instanceof Int32Array)
 		})
+
+		it("Should return repeated int32 fields as non-typed array", function() {
+			var obj = {
+				"name": "test",
+				"n64": 123,
+			        "r": new Int32Array([1,2,3,4])
+			}
+
+			var buffer = pb.serialize(obj, "tk.tewi.Test")
+			var parsed = pb.parseWithUnknown(buffer, "tk.tewi.Test", null, null, null, false);
+
+			assert.deepEqual(obj.r, parsed.r)
+			assert.notEqual(parsed.r instanceof Int32Array, true,
+				'Should not be an Int32Array');
+		})
+		}
 	})
 
 	describe("Info", function() {
