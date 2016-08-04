@@ -198,9 +198,16 @@ ParseUnknownFieldset(const google::protobuf::UnknownFieldSet &fs) {
 }
 
 Local<Object> ParsePartWithUnknown(Isolate *isolate,
+                               const google::protobuf::Message &message,
+                               bool preserve_int64) {
+  // reset whitespace
+  return ParsePartWithUnknown(isolate, message, preserve_int64, true);
+}
+
+Local<Object> ParsePartWithUnknown(Isolate *isolate,
                                    const google::protobuf::Message &message,
-                                   bool preserve_int64) {
-  // sad
+                                   bool preserve_int64, bool use_typed_array) {
+  // reset whitespace
   Local<Object> ret = Nan::New<Object>();
 
   const Reflection *r = message.GetReflection();
@@ -221,7 +228,7 @@ Local<Object> ParsePartWithUnknown(Isolate *isolate,
       if (field->is_repeated()) {
         int size = r->FieldSize(message, field);
         Local<Object> typedArray;
-        if (size > 0 && NewTypedArray(typedArray, isolate, field, size)) {
+        if (size > 0 && use_typed_array && NewTypedArray(typedArray, isolate, field, size)) {
           for (int i = 0; i < size; i++)
             typedArray->Set(
                 i, ParseField(isolate, message, r, field, i, preserve_int64));
@@ -252,6 +259,15 @@ Local<Object> ParsePartWithUnknown(Isolate *isolate,
 Local<Object> ParsePart(Isolate *isolate,
                         const google::protobuf::Message &message,
                         bool preserve_int64) {
+  // reset whitespace
+  return ParsePart(isolate, message, preserve_int64, true);
+}
+
+Local<Object> ParsePart(Isolate *isolate,
+                        const google::protobuf::Message &message,
+                        bool preserve_int64,
+                        bool use_typed_array) {
+  // reset whitespace
   Local<Object> ret = Nan::New<Object>();
   // get a reflection
   const Reflection *r = message.GetReflection();
@@ -272,7 +288,7 @@ Local<Object> ParsePart(Isolate *isolate,
       if (field->is_repeated()) {
         int size = r->FieldSize(message, field);
         Local<Object> typedArray;
-        if (size > 0 && NewTypedArray(typedArray, isolate, field, size)) {
+        if (size > 0 && use_typed_array && NewTypedArray(typedArray, isolate, field, size)) {
           for (int i = 0; i < size; i++)
             typedArray->Set(
                 i, ParseField(isolate, message, r, field, i, preserve_int64));

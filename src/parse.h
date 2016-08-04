@@ -12,8 +12,18 @@ Local<Object> ParsePart(Isolate *isolate,
                         const google::protobuf::Message &message,
                         bool preserve_int64);
 
+Local<Object> ParsePart(Isolate *isolate,
+                        const google::protobuf::Message &message,
+                        bool preserve_int64,
+                        bool use_typed_array);
+
 Local<Object> ParsePartWithUnknown(Isolate *isolate,
                                    const google::protobuf::Message &message,
                                    bool preserve_int64);
+                                   
+ Local<Object> ParsePartWithUnknown(Isolate *isolate,
+                                    const google::protobuf::Message &message,
+                                    bool preserve_int64,
+                                    bool use_typed_array);
 
 #endif

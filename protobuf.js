@@ -35,7 +35,7 @@ function pb_wrapper() {
   this.native = new protobuf.native(descriptor, int64);
 }
 
-pb_wrapper.prototype.parse = function(buffer, schema, callback, limit, warn) {
+pb_wrapper.prototype.parse = function(buffer, schema, callback, limit, warn, used_typed_array) {
   if (!buffer || !schema)
     throw new Error("Invalid arguments");
 
@@ -46,8 +46,12 @@ pb_wrapper.prototype.parse = function(buffer, schema, callback, limit, warn) {
   warn = warn | 0;
   var native = this.native;
 
+  if (used_typed_array === undefined) {
+    used_typed_array = true;
+  }
+
   if (!callback) {
-    var result = native.parse(buffer, schema, limit, warn);
+    var result = native.parse(buffer, schema, limit, warn, used_typed_array);
     if (result === null)
       throw new Error("Unexpected error while parsing " + schema);
     else
@@ -55,7 +59,7 @@ pb_wrapper.prototype.parse = function(buffer, schema, callback, limit, warn) {
   } else
     process.nextTick(function() {
       try {
-        var result = native.parse(buffer, schema, limit, warn);
+        var result = native.parse(buffer, schema, limit, warn, used_typed_array);
         callback(null, result);
       } catch (e) {
         callback(e, null);
@@ -63,7 +67,7 @@ pb_wrapper.prototype.parse = function(buffer, schema, callback, limit, warn) {
     })
 };
 
-pb_wrapper.prototype.parseWithUnknown = function(buffer, schema, callback, limit, warn) {
+pb_wrapper.prototype.parseWithUnknown = function(buffer, schema, callback, limit, warn, used_typed_array) {
   if (!buffer || !schema)
     throw new Error("Invalid arguments");
 
@@ -74,8 +78,12 @@ pb_wrapper.prototype.parseWithUnknown = function(buffer, schema, callback, limit
   warn = warn | 0;
   var native = this.native;
 
+  if (used_typed_array === undefined) {
+    used_typed_array = true;
+  }
+
   if (!callback) {
-    var result = native.parseWithUnknown(buffer, schema, limit, warn);
+    var result = native.parseWithUnknown(buffer, schema, limit, warn, used_typed_array);
     if (result === null)
       throw new Error("Unexpected error while parsing " + schema);
     else
@@ -83,7 +91,7 @@ pb_wrapper.prototype.parseWithUnknown = function(buffer, schema, callback, limit
   } else
     process.nextTick(function() {
       try {
-        var result = native.parseWithUnknown(buffer, schema, limit, warn);
+        var result = native.parseWithUnknown(buffer, schema, limit, warn, used_typed_array);
         callback(null, result);
       } catch (e) {
         callback(e, null);

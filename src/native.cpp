@@ -131,9 +131,21 @@ NAN_METHOD(NativeProtobuf::Parse) {
   }
   bool parseResult = message->ParseFromCodedStream(&coded_stream);
 
+  // Check if we want to use a typed array for our numeric fields.
+  // Default to true
+
+  bool use_typed_array;
+
+  if (info.Length() < 5) {
+    use_typed_array = true;
+  } else {
+    use_typed_array = info[4]->BooleanValue();
+  }
+
   if (parseResult) {
     Local<Object> ret =
-        ParsePart(Isolate::GetCurrent(), *message, self->preserve_int64);
+        ParsePart(Isolate::GetCurrent(), *message, self->preserve_int64,
+          use_typed_array);
     info.GetReturnValue().Set(ret);
   } else {
     Nan::ThrowError("Malformed protocol buffer");
@@ -174,9 +186,20 @@ NAN_METHOD(NativeProtobuf::ParseWithUnknown) {
   }
   bool parseResult = message->ParseFromCodedStream(&coded_stream);
 
+  // Check if we want to use a typed array for our numeric fields.
+  // Default to true
+
+  bool use_typed_array;
+
+  if (info.Length() < 5) {
+    use_typed_array = true;
+  } else {
+    use_typed_array = info[4]->BooleanValue();
+  }
+
   if (parseResult) {
     Local<Object> ret = ParsePartWithUnknown(Isolate::GetCurrent(), *message,
-                                             self->preserve_int64);
+                                             self->preserve_int64, use_typed_array);
     info.GetReturnValue().Set(ret);
   } else {
     Nan::ThrowError("Malformed protocol buffer");
