@@ -2,7 +2,7 @@
 	'variables': {
 		'conditions': [
 			['OS == "win"', {
-				'lp%': '<!(echo %LIBPROTOBUF%)'
+				'lp%': 'lpb_release'
 			}],
 			['OS != "win"', {
 				'lp%': '<!(sh lp.sh)'
@@ -16,15 +16,12 @@
 			'<!(node -e "require(\'nan\')")',
 			'<(lp)/include'
 		],
-		'libraries': [
-			'-L<(lp)/lib'
-		],
 		'cflags' : [ '-Ofast', '-ffast-math', '-funroll-loops', '-fomit-frame-pointer', '-std=c++11', '-pthread', '-static', '-I../../' ],
 		'cflags_cc' : [ '-Ofast', '-ffast-math', '-funroll-loops', '-fomit-frame-pointer', '-std=c++11', '-pthread', '-static', '-I../../' ],
 		'conditions': [
 			['OS == "win"', {
 				'libraries': [
-					'-llibprotobuf.lib'
+					'-l../<(lp)/lib/libprotobuf'
 				],
 				'msvs_settings': {
 					'VCLinkerTool': {
@@ -34,7 +31,8 @@
 			}],
 			['OS == "mac"', {
 				'libraries': [
-					'-lprotobuf'
+					'-lprotobuf',
+					'-L<(lp)/lib'
 				],
 				'xcode_settings': {
 					'MACOSX_DEPLOYMENT_TARGET': '10.9',
@@ -47,7 +45,8 @@
 			['OS == "linux"', {
 				'cflags_cc!': [ '-fno-rtti' ],
 				'libraries': [
-					'-lprotobuf'
+					'-lprotobuf',
+					'-L<(lp)/lib'
 				]
 			}]
 		]
