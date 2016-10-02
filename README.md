@@ -25,9 +25,11 @@ Thanks to [cleverca22](https://github.com/cleverca22) for this nice suggestion a
 ## Requirements
 
 * Protocol Buffers >= 2.1.0
-* Node.js >= 0.10.0
+* Node.js >= 0.12
 
-Please, note that Node.js versions before 4.x are not officially supported and may break eventually. It is highly recommended to update your project to at least LTS version (currently — 4.4.5).
+Please, note that Node.js versions before 4.x are not officially supported and may break eventually. It is highly recommended to update your project to at least LTS version (currently — 4.6.0).
+
+NodeJS 0.10 support ended on October 1st 2016. 0.12 support will be dropped January 1st 2017. See NodeJS LTS schedule.
 
 ## Installation
 
@@ -37,17 +39,12 @@ Make sure you have node, node-gyp, compiler and libprotobuf binary and developme
 
 ### Windows
 
-*Note: first paragraph might be outdated, you should always use Visual C++ version compatible with your Node.js installation.*
+1. Install CMake, make sure to check "Add CMake to the system PATH" for either all users or current user.
+2. Install Git, make sure to check "Use Git from the Windows Command Prompt" or "Use Git and optional Unix tools".
+3. Install build tools via NPM: ```npm install --global --production windows-build-tools```.
+4. Install node-protobuf, build script will automatically download, compile and use libprotobuf v3.1.0. Note: this will take a long time.
 
-First you have to obtain Microsoft Visual C++ 2010. Express is fine, but if you install SP1 then you'll need to reinstall x64 compilers from [here](http://www.microsoft.com/en-us/download/details.aspx?id=4422). Node.js distribution for Windows already includes node-gyp tool, so you don't need to worry about it. VC++ 2012/2013 should work as long as you have compiler version compatible with your Node.js installation (i.e. 64 for 64 and 32 for 32). For any problems compiling native modules on Windows consult [node-gyp](https://github.com/TooTallNate/node-gyp) repository.
-
-Next, compile libprotobuf. Get it from Google, open vsprojects/protobuf.sln and compile it according to your OS version. For Windows 64 you *must* compile 64-bit library as Node.js is 64-bit on your system. By default there is only 32-bit target, so you have to add 64-bit manually. Open libprotobuf project properties and set CRT to Multi-Threaded (*not* DLL). Compile libprotobuf Release.
-
-Next, run vsprojects/extract-includes.bat, it will copy required headers in vsprojects/include.
-
-Create LIBPROTOBUF environment variable pointing to some folder where you'll put libprotobuf files. You can use SET LIBPROTOBUF=path from command line prompt, or use tool like RapidEE. Put libprotobuf.lib to $(LIBPROTOBUF)/lib and include files to $(LIBPROTOBUF)/include. You're done.
-
-Now just ``` npm install node-protobuf ``` and it should be fine.
+If you get errors, please, update npm to the latest version.
 
 ### Mac OS X
 
