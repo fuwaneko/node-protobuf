@@ -39,12 +39,12 @@ Make sure you have node, node-gyp, compiler and libprotobuf binary and developme
 
 ### Windows
 
-1. Install CMake, make sure to check "Add CMake to the system PATH" for either all users or current user.
-2. Install Git, make sure to check "Use Git from the Windows Command Prompt" or "Use Git and optional Unix tools".
-3. Install build tools via NPM: ```npm install --global --production windows-build-tools```.
-4. Install node-protobuf, build script will automatically download, compile and use libprotobuf v3.1.0. Note: this will take a long time.
+Only 64-bit version is supported. Won't install on 32-bit systems.
 
-If you get errors, please, update npm to the latest version.
+1. Install build tools via NPM: ```npm install --global --production windows-build-tools```.
+2. Install node-protobuf
+
+If you get errors, please, update npm to the latest version. Precompiled libprotobuf v3.1.0 is included.
 
 ### Mac OS X
 
