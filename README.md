@@ -1,7 +1,7 @@
 # node-protobuf
 
 [![Join the chat at https://gitter.im/fuwaneko/node-protobuf](https://badges.gitter.im/fuwaneko/node-protobuf.svg)](https://gitter.im/fuwaneko/node-protobuf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/fuwaneko/node-protobuf.png?branch=master)](https://travis-ci.org/fuwaneko/node-protobuf)
+[![Build Status](https://travis-ci.org/fuwaneko/node-protobuf.svg?branch=master)](https://travis-ci.org/fuwaneko/node-protobuf)
 [![Known Vulnerabilities](https://snyk.io/test/github/snyk/snyk/badge.svg)](https://snyk.io/test/github/fuwaneko/node-protobuf)
 
 It's a very simple wrapper around protocol buffers library by Google.
