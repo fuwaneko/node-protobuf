@@ -10,6 +10,10 @@ NativeProtobuf::NativeProtobuf(DescriptorPool *pool,
                                bool preserve_int64)
     : pool(pool), info(info), preserve_int64(preserve_int64) {}
 
+NativeProtobuf::~NativeProtobuf() {
+  delete pool;
+}
+
 void NativeProtobuf::Init(Local<Object> exports) {
 
   // constructor

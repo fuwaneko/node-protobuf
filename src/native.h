@@ -8,6 +8,7 @@ public:
   static void Init(Local<Object> exports);
   NativeProtobuf(DescriptorPool *pool, std::vector<std::string> info,
                  bool preserve_int64);
+  ~NativeProtobuf();
 
   DescriptorPool *pool;
   std::vector<std::string> info;
