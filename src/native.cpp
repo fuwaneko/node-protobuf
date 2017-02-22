@@ -3,15 +3,21 @@
 #include "serialize.h"
 
 Nan::Persistent<Function> constructor;
-DynamicMessageFactory NativeProtobuf::factory;
 
-NativeProtobuf::NativeProtobuf(DescriptorPool *pool,
-                               std::vector<std::string> info,
-                               bool preserve_int64)
-    : pool(pool), info(info), preserve_int64(preserve_int64) {}
+NativeProtobuf::NativeProtobuf(FileDescriptorSet *descriptors,
+  bool preserve_int64) : preserve_int64(preserve_int64) {
 
-NativeProtobuf::~NativeProtobuf() {
-  delete pool;
+  for (int i = 0; i < descriptors->file_size(); i++) {
+    const FileDescriptor *f = pool.BuildFile(descriptors->file(i));
+    for (int i = 0; i < f->message_type_count(); i++) {
+      const Descriptor *d = f->message_type(i);
+      const std::string name = d->full_name();
+
+      info.push_back(name);
+    }
+  }
+
+  // Initialization steps have been taken
 }
 
 void NativeProtobuf::Init(Local<Object> exports) {
@@ -40,24 +46,15 @@ NAN_METHOD(NativeProtobuf::New) {
   size_t buffer_length = Buffer::Length(buffer_obj);
 
   FileDescriptorSet descriptors;
-  if (!descriptors.ParseFromArray(buffer_data, buffer_length))
-    return Nan::ThrowError("Malformed descriptor");
-
-  std::vector<std::string> infoList;
-  DescriptorPool *pool = new DescriptorPool;
-  for (int i = 0; i < descriptors.file_size(); i++) {
-    const FileDescriptor *f = pool->BuildFile(descriptors.file(i));
-    for (int i = 0; i < f->message_type_count(); i++) {
-      const Descriptor *d = f->message_type(i);
-      const std::string name = d->full_name();
-
-      infoList.push_back(name);
-    }
+  if (!descriptors.ParseFromArray(buffer_data, buffer_length)) {
+    Nan::ThrowError("Malformed descriptor");
+    info.GetReturnValue().Set(Nan::Undefined());
+    return;
   }
 
   bool preserve_int64 = info[1]->BooleanValue();
 
-  NativeProtobuf *proto = new NativeProtobuf(pool, infoList, preserve_int64);
+  NativeProtobuf *proto = new NativeProtobuf(&descriptors, preserve_int64);
   proto->Wrap(info.This());
 
   info.GetReturnValue().Set(info.This());
@@ -73,14 +70,14 @@ NAN_METHOD(NativeProtobuf::Serialize) {
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
-  const Descriptor *descriptor = self->pool->FindMessageTypeByName(schema_name);
+  const Descriptor *descriptor = self->pool.FindMessageTypeByName(schema_name);
   if (descriptor == NULL) {
     Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
     info.GetReturnValue().Set(Nan::Undefined());
     return;
   }
 
-  google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
+  google::protobuf::Message *message = self->factory.GetPrototype(descriptor)->New();
 
   if (SerializePart(message, subj, self->preserve_int64) < 0) {
     // required field not present!
@@ -117,13 +114,13 @@ NAN_METHOD(NativeProtobuf::Parse) {
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
-  const Descriptor *descriptor = self->pool->FindMessageTypeByName(schema_name);
+  const Descriptor *descriptor = self->pool.FindMessageTypeByName(schema_name);
   if (descriptor == NULL) {
     Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
     info.GetReturnValue().Set(Nan::Null());
     return;
   }
-  google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
+  google::protobuf::Message *message = self->factory.GetPrototype(descriptor)->New();
 
   google::protobuf::io::ArrayInputStream array_stream(buffer_data,
                                                       buffer_length);
@@ -171,14 +168,14 @@ NAN_METHOD(NativeProtobuf::ParseWithUnknown) {
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
-  const Descriptor *descriptor = self->pool->FindMessageTypeByName(schema_name);
+  const Descriptor *descriptor = self->pool.FindMessageTypeByName(schema_name);
   if (descriptor == NULL) {
     Nan::ThrowError(("Unknown schema name: " + schema_name).c_str());
     info.GetReturnValue().Set(Nan::Null());
     return;
   }
 
-  google::protobuf::Message *message = factory.GetPrototype(descriptor)->New();
+  google::protobuf::Message *message = self->factory.GetPrototype(descriptor)->New();
 
   google::protobuf::io::ArrayInputStream array_stream(buffer_data,
                                                       buffer_length);
