@@ -280,9 +280,6 @@ Local<Object> ParsePart(Isolate *isolate,
 
     if (field != NULL) {
 
-      if (field->is_optional() && !r->HasField(message, field))
-        continue;
-
       Local<Value> v;
 
       if (field->is_repeated()) {
