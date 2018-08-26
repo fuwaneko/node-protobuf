@@ -31,3 +31,16 @@ for (var i = 0; i < 1000000; i++) {
     var deserPB = pb.parse(buffer, 'PerfTest');
 }
 console.timeEnd('parse');
+
+console.time('serialize json');
+for (var i = 0; i < 1000000; i++) {
+    var serJS = JSON.stringify(message);
+}
+console.timeEnd('serialize json');
+
+buffer = JSON.stringify(message);
+console.time('parse json');
+for (var i = 0; i < 1000000; i++) {
+    var deserJS = JSON.parse(buffer);
+}
+console.timeEnd('parse json');

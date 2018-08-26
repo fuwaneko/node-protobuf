@@ -61,12 +61,13 @@ NAN_METHOD(NativeProtobuf::New) {
 }
 
 NAN_METHOD(NativeProtobuf::Serialize) {
+  auto isolate = info.GetIsolate();
 
   NativeProtobuf *self = Nan::ObjectWrap::Unwrap<NativeProtobuf>(info.This());
 
   // get object to serialize and name of schema
   Local<Object> subj = info[0]->ToObject();
-  String::Utf8Value schemaName(info[1]->ToString());
+  String::Utf8Value schemaName(isolate, info[1]->ToString());
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
@@ -79,7 +80,7 @@ NAN_METHOD(NativeProtobuf::Serialize) {
 
   google::protobuf::Message *message = self->factory.GetPrototype(descriptor)->New();
 
-  if (SerializePart(message, subj, self->preserve_int64) < 0) {
+  if (SerializePart(isolate, message, subj, self->preserve_int64) < 0) {
     // required field not present!
     info.GetReturnValue().Set(Nan::Null());
     return;
@@ -103,6 +104,7 @@ NAN_METHOD(NativeProtobuf::Serialize) {
 }
 
 NAN_METHOD(NativeProtobuf::Parse) {
+  auto isolate = info.GetIsolate();
 
   NativeProtobuf *self = Nan::ObjectWrap::Unwrap<NativeProtobuf>(info.This());
 
@@ -110,7 +112,7 @@ NAN_METHOD(NativeProtobuf::Parse) {
   char *buffer_data = Buffer::Data(buffer_obj);
   size_t buffer_length = Buffer::Length(buffer_obj);
 
-  String::Utf8Value schemaName(info[1]->ToString());
+  String::Utf8Value schemaName(isolate, info[1]->ToString());
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema
@@ -157,6 +159,7 @@ NAN_METHOD(NativeProtobuf::Parse) {
 }
 
 NAN_METHOD(NativeProtobuf::ParseWithUnknown) {
+  auto isolate = info.GetIsolate();
 
   NativeProtobuf *self = Nan::ObjectWrap::Unwrap<NativeProtobuf>(info.This());
 
@@ -164,7 +167,7 @@ NAN_METHOD(NativeProtobuf::ParseWithUnknown) {
   char *buffer_data = Buffer::Data(buffer_obj);
   size_t buffer_length = Buffer::Length(buffer_obj);
 
-  String::Utf8Value schemaName(info[1]->ToString());
+  String::Utf8Value schemaName(isolate, info[1]->ToString());
   std::string schema_name = std::string(*schemaName);
 
   // create a message based on schema

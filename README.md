@@ -10,6 +10,8 @@ I know that wrappers do exist, but I didn't like them.
 
 ## Current status
 
+**UNMAINTAINED, recommended to use ProtoBuf.js**
+
 Supports Node.js 0.10+ (thanks to [bgdavidx](https://github.com/bgdavidx)).
 For browser support see alternative pure JS implementation: [ProtoBuf.js](https://github.com/dcodeIO/ProtoBuf.js).
 

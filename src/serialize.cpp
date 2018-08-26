@@ -2,9 +2,9 @@
 
 #include "serialize.h"
 
-void SerializeField(google::protobuf::Message *message, const Reflection *r,
-                    const FieldDescriptor *field, Local<Value> val,
-                    bool preserve_int64) {
+void SerializeField(Isolate *isolate, google::protobuf::Message *message,
+                    const Reflection *r, const FieldDescriptor *field,
+                    Local<Value> val, bool preserve_int64) {
   const EnumValueDescriptor *enumValue = NULL;
   bool repeated = field->is_repeated();
 
@@ -30,7 +30,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
           n64 = ((uint64)hi << 32) + (uint64)lo;
           r->AddInt64(message, field, n64);
         } else if (preserve_int64 && val->IsString()) {
-          String::Utf8Value temp(val->ToString());
+          String::Utf8Value temp(isolate, val->ToString());
           std::string value = std::string(*temp);
           r->AddInt64(message, field, std::stoll(value, nullptr, 10));
         } else
@@ -43,7 +43,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
         n64 = ((uint64)hi << 32) + (uint64)lo;
         r->SetInt64(message, field, n64);
       } else if (preserve_int64 && val->IsString()) {
-        String::Utf8Value temp(val->ToString());
+        String::Utf8Value temp(isolate, val->ToString());
         std::string value = std::string(*temp);
         r->SetInt64(message, field, std::stoll(value, nullptr, 10));
       } else
@@ -65,7 +65,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
           n64 = ((uint64)hi << 32) + (uint64)lo;
           r->AddUInt64(message, field, n64);
         } else if (preserve_int64 && val->IsString()) {
-          String::Utf8Value temp(val->ToString());
+          String::Utf8Value temp(isolate, val->ToString());
           std::string value = std::string(*temp);
           r->AddUInt64(message, field, std::stoull(value, nullptr, 10));
         } else
@@ -78,7 +78,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
         n64 = ((uint64)hi << 32) + (uint64)lo;
         r->SetUInt64(message, field, n64);
       } else if (preserve_int64 && val->IsString()) {
-        String::Utf8Value temp(val->ToString());
+        String::Utf8Value temp(isolate, val->ToString());
         std::string value = std::string(*temp);
         r->SetUInt64(message, field, std::stoull(value, nullptr, 10));
       } else {
@@ -105,10 +105,10 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
       break;
     case FieldDescriptor::CPPTYPE_ENUM:
       // TODO: possible memory leak?
-      enumValue =
-          val->IsNumber()
-              ? field->enum_type()->FindValueByNumber(val->Int32Value())
-              : field->enum_type()->FindValueByName(*String::Utf8Value(val));
+      enumValue = val->IsNumber()
+                      ? field->enum_type()->FindValueByNumber(val->Int32Value())
+                      : field->enum_type()->FindValueByName(
+                            *String::Utf8Value(isolate, val));
 
       if (enumValue != NULL) {
         if (repeated)
@@ -120,11 +120,11 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
     case FieldDescriptor::CPPTYPE_MESSAGE:
       if (val->IsObject()) {
         if (repeated)
-          SerializePart(r->AddMessage(message, field), val.As<Object>(),
+          SerializePart(isolate, r->AddMessage(message, field), val.As<Object>(),
                         preserve_int64);
         else
-          SerializePart(r->MutableMessage(message, field), val.As<Object>(),
-                        preserve_int64);
+          SerializePart(isolate, r->MutableMessage(message, field),
+                        val.As<Object>(), preserve_int64);
       }
       break;
     case FieldDescriptor::CPPTYPE_STRING:
@@ -158,7 +158,7 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
           }
         }
       }
-      String::Utf8Value temp(val->ToString());
+      String::Utf8Value temp(isolate, val->ToString());
       std::string value = std::string(*temp);
       if (repeated)
         r->AddString(message, field, value);
@@ -169,8 +169,8 @@ void SerializeField(google::protobuf::Message *message, const Reflection *r,
   }
 }
 
-int SerializePart(google::protobuf::Message *message, Local<Object> subj,
-                  bool preserve_int64) {
+int SerializePart(Isolate *isolate, google::protobuf::Message *message,
+                  Local<Object> subj, bool preserve_int64) {
   // get a reflection
   const Reflection *r = message->GetReflection();
   const Descriptor *d = message->GetDescriptor();
@@ -211,9 +211,10 @@ int SerializePart(google::protobuf::Message *message, Local<Object> subj,
       }
       array = val.As<Object>();
       for (uint32_t i = 0; i < len; i++)
-        SerializeField(message, r, field, array->Get(i), preserve_int64);
+        SerializeField(isolate, message, r, field, array->Get(i),
+                       preserve_int64);
     } else {
-      SerializeField(message, r, field, val, preserve_int64);
+      SerializeField(isolate, message, r, field, val, preserve_int64);
     }
 
   }
